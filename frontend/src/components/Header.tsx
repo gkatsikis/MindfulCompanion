@@ -10,11 +10,7 @@ interface HeaderProps {
 
 const Header: React.FC<HeaderProps> = ({ isLoggedIn, onLogin, onLogout, onProfileClick }) => {
   return (
-    <div className="flex justify-between items-center mb-8">
-      <h1 className="text-3xl font-light text-gray-800">
-        How are you feeling today?
-      </h1>
-      
+    <div className="grid justify-self-end items-center mb-8">
       <div className="flex items-center gap-4">
         {isLoggedIn ? (
           <>
