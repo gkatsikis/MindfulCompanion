@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import type { HelpType } from '../types';
 import Header from '../components/Header';
+import ContentModal from '../components/ContentModal';
 
 interface JournalPageProps {
   isLoggedIn: boolean;
@@ -17,6 +18,11 @@ const JournalPage: React.FC<JournalPageProps> = ({
 }) => {
   const [journalTitle, setJournalTitle] = useState<string>('');
   const [journalContent, setJournalContent] = useState<string>('');
+  const [showModal, setShowModal] = useState<boolean>(false);
+  const [modalContent, setModalContent] = useState<string>('');
+  const [modalTitle, setModalTitle] = useState<string>('');
+  const [modalType, setModalType] = useState<'sample' | 'response' | 'default'>('default');
+  const [showCopyButton, setShowCopyButton] = useState<boolean>(false);
 
   const handleSubmit = (helpType: HelpType): void => {
     if (helpType === 'save_only') {
@@ -36,6 +42,17 @@ const JournalPage: React.FC<JournalPageProps> = ({
     setJournalContent('');
   };
 
+  const handleShowSampleText = (): void => {
+    const sampleText = "Today I woke up sad, I felt hopeless and wasn't sure how to change my life."
+    console.log('triggered succesfully')
+
+    setModalContent(sampleText)
+    setModalTitle('Sample Journal Entry')
+    setModalType('sample')
+    setShowCopyButton(true);
+    setShowModal(true);
+  }
+
   return (
     <div className="max-w-4xl mx-auto p-6">
       <Header 
@@ -45,6 +62,36 @@ const JournalPage: React.FC<JournalPageProps> = ({
         onProfileClick={onProfileClick}
       />
 
+      <ContentModal
+        show={showModal}
+        onClose={() => setShowModal(false)}
+        title={modalTitle}
+        content={modalContent}
+        showCopyButton={showCopyButton}
+        type={modalType}
+      />
+
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-left text-3xl font-light text-gray-800">
+          How are you feeling today?
+        </h1>
+        {isLoggedIn ? (
+          <button
+            onClick={() => handleSubmit('save_only')}
+            disabled={!journalContent.trim()}
+            className="px-8 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg border-2 border-gray-300 hover:border-gray-400 transition-all disabled:opacity-50 cursor-pointer"
+          >
+            Save Only (No Response)
+          </button>
+          ) : (
+            <button
+              onClick={handleShowSampleText}
+              className="px-8 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg border-2 border-gray-300 hover:border-gray-400 transition-all disabled:opacity-50 cursor-pointer"
+            >
+              Sample Text
+            </button>
+          )}
+      </div>
       {/* Journal Entry Form */}
       <div className="bg-white rounded-xl shadow-lg p-8 mb-6">
         {/* Optional Title */}
@@ -107,13 +154,6 @@ const JournalPage: React.FC<JournalPageProps> = ({
           <div className="font-medium mb-1">Learn Patterns</div>
           <div className="text-sm opacity-75">Help me understand trends</div>
         </button>
-        <button
-            onClick={() => handleSubmit('save_only')}
-            disabled={!journalContent.trim()}
-            className="px-8 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg border-2 border-gray-300 hover:border-gray-400 transition-all disabled:opacity-50 cursor-pointer"
-          >
-            Save Only (No Response)
-          </button>
         </>
       )}
     </div>
