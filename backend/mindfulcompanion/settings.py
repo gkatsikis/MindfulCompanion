@@ -45,7 +45,8 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
-    'api'
+    'api',
+    'corsheaders',
 ]
 
 AUTHENTICATION_BACKENDS = [
@@ -56,6 +57,7 @@ AUTHENTICATION_BACKENDS = [
 AUTH_USER_MODEL = 'api.User'
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -127,6 +129,14 @@ SOCIALACCOUNT_PROVIDERS = {
         }
     }
 }
+
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:5173',
+    'http://127.0.0.1:5173',
+]
+
+# for development only
+# CORS_ALLOW_ALL_ORIGINS = True
 
 
 # Internationalization

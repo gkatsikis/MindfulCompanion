@@ -17,6 +17,8 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
+from api import views
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include('allauth.urls')),
@@ -27,4 +29,5 @@ urlpatterns = [
     # /accounts/password/reset/
     # /accounts/google/login/
     # /accounts/profile/
+    path('api/test/', views.test_connection, name='test_connection'),
 ]

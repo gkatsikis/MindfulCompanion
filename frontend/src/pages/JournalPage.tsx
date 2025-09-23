@@ -3,6 +3,8 @@ import type { HelpType } from '../types';
 import Header from '../components/Header';
 import ContentModal from '../components/ContentModal';
 
+import { testConnection } from '../services/testService';
+
 interface JournalPageProps {
   isLoggedIn: boolean;
   onLogin: () => void;
@@ -40,6 +42,17 @@ const JournalPage: React.FC<JournalPageProps> = ({
     // Clear form after submission
     setJournalTitle('');
     setJournalContent('');
+
+    // activate response modal?
+  };
+
+  const handleTestConnection = async (): Promise<void> => {
+    try {
+      const result = await testConnection();
+      console.log(`Message: ${result.message}, Status: ${result.status}`);
+    } catch (error) {
+      console.log('Connection failed: ', error);
+    }
   };
 
   const handleShowSampleText = (): void => {
@@ -77,7 +90,8 @@ const JournalPage: React.FC<JournalPageProps> = ({
         </h1>
         {isLoggedIn ? (
           <button
-            onClick={() => handleSubmit('save_only')}
+            // onClick={() => handleSubmit('save_only')}
+            onClick={handleTestConnection}
             disabled={!journalContent.trim()}
             className="px-8 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg border-2 border-gray-300 hover:border-gray-400 transition-all disabled:opacity-50 cursor-pointer"
           >
