@@ -2,28 +2,24 @@ import React, { useState } from 'react';
 import type { HelpType } from '../types';
 import Header from '../components/Header';
 import ContentModal from '../components/ContentModal';
+import { useAuth } from '../contexts/authContext';
 
 import { testConnection } from '../services/testService';
 
 interface JournalPageProps {
-  isLoggedIn: boolean;
-  onLogin: () => void;
-  onLogout: () => void;
   onProfileClick: () => void;
 }
 
-const JournalPage: React.FC<JournalPageProps> = ({ 
-  isLoggedIn, 
-  onLogin, 
-  onLogout, 
+const JournalPage: React.FC<JournalPageProps> = ({
   onProfileClick 
 }) => {
+  const { isLoggedIn, user, logout } = useAuth();
   const [journalTitle, setJournalTitle] = useState<string>('');
   const [journalContent, setJournalContent] = useState<string>('');
   const [showModal, setShowModal] = useState<boolean>(false);
   const [modalContent, setModalContent] = useState<string>('');
   const [modalTitle, setModalTitle] = useState<string>('');
-  const [modalType, setModalType] = useState<'sample' | 'response' | 'default'>('default');
+  const [modalType, setModalType] = useState<'sample' | 'response' | 'default' | 'auth'>('default');
   const [showCopyButton, setShowCopyButton] = useState<boolean>(false);
 
   const handleSubmit = (helpType: HelpType): void => {
@@ -44,6 +40,7 @@ const JournalPage: React.FC<JournalPageProps> = ({
     setJournalContent('');
 
     // activate response modal?
+    
   };
 
   const handleTestConnection = async (): Promise<void> => {
@@ -66,13 +63,17 @@ const JournalPage: React.FC<JournalPageProps> = ({
     setShowModal(true);
   }
 
+  const handleLoginClick = (): void => {
+    setModalType('auth');
+    setModalTitle('Welcome to Mindful Companion');
+    setShowModal(true);
+  }
+
   return (
     <div className="max-w-4xl mx-auto p-6">
-      <Header 
-        isLoggedIn={isLoggedIn}
-        onLogin={onLogin}
-        onLogout={onLogout}
+      <Header
         onProfileClick={onProfileClick}
+        onLoginClick={handleLoginClick}
       />
 
       <ContentModal
@@ -130,7 +131,8 @@ const JournalPage: React.FC<JournalPageProps> = ({
       {/* Action Buttons */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4 place-items-center">
         <button
-          onClick={() => handleSubmit('acute_validation')}
+          // onClick={() => handleSubmit('acute_validation')}
+          onClick={handleTestConnection}
           disabled={!journalContent.trim()}
           className="p-4 bg-blue-50 hover:bg-blue-100 text-blue-700 rounded-lg border-2 border-blue-200 hover:border-blue-300 transition-all disabled:opacity-50 cursor-pointer"
         >
@@ -139,7 +141,8 @@ const JournalPage: React.FC<JournalPageProps> = ({
         </button>
         
         <button
-          onClick={() => handleSubmit('acute_skills')}
+          // onClick={() => handleSubmit('acute_skills')}
+          onClick={handleTestConnection}
           disabled={!journalContent.trim()}
           className="p-4 bg-green-50 hover:bg-green-100 text-green-700 rounded-lg border-2 border-green-200 hover:border-green-300 transition-all disabled:opacity-50 cursor-pointer"
         >

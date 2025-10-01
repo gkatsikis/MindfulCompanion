@@ -1,23 +1,47 @@
 import React, { useState } from 'react';
+import { Mail, Lock, User, Eye, EyeOff } from 'lucide-react';
+import { login, register, loginWithGoogle } from '../services/authService';
+
+
+interface User {
+  id: number;
+  email: string;
+  first_name: string;
+  last_name: string;
+  date_joined: string;
+}
 
 interface ContentModalProps {
   show: boolean;
   onClose: () => void;
   title?: string;
-  content: string;
+  content?: string;
   showCopyButton?: boolean;
-  type?: 'sample' | 'response' | 'default';
+  type?: 'sample' | 'response' | 'default' | 'auth';
+  onAuthSuccess?: (user: User) => void;
 }
 
 const ContentModal: React.FC<ContentModalProps> = ({ 
   show, 
   onClose, 
   title = "Content",
-  content,
+  content = "",
   showCopyButton = false,
-  type = 'default'
+  type = 'default',
+  onAuthSuccess
 }) => {
   const [copied, setCopied] = useState(false);
+
+  const [authMode, setAuthMode] = useState<'login' | 'register'>('login');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [authLoading, setAuthLoading] = useState(false);
+  const [authError, setAuthError] = useState('');
 
   const handleCopy = async () => {
     try {
