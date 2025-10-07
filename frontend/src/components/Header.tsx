@@ -1,14 +1,15 @@
 import React from 'react';
 import { User, LogIn } from 'lucide-react';
+import { useAuth } from '../contexts/authContext';
 
 interface HeaderProps {
-  isLoggedIn: boolean;
-  onLogin: () => void;
-  onLogout: () => void;
   onProfileClick: () => void;
+  onLoginClick: () => void;
 }
 
-const Header: React.FC<HeaderProps> = ({ isLoggedIn, onLogin, onLogout, onProfileClick }) => {
+const Header: React.FC<HeaderProps> = ({ onProfileClick, onLoginClick }) => {
+  const { isLoggedIn, logout } = useAuth();
+
   return (
     <div className="grid justify-self-end items-center mb-8">
       <div className="flex items-center gap-4">
@@ -22,7 +23,7 @@ const Header: React.FC<HeaderProps> = ({ isLoggedIn, onLogin, onLogout, onProfil
               Profile
             </button>
             <button
-              onClick={onLogout}
+              onClick={logout}
               className="px-4 py-2 text-gray-600 hover:text-red-600 transition-colors cursor-pointer"
             >
               Logout
@@ -30,7 +31,7 @@ const Header: React.FC<HeaderProps> = ({ isLoggedIn, onLogin, onLogout, onProfil
           </>
         ) : (
           <button
-            onClick={onLogin}
+            onClick={onLoginClick}
             className="flex items-center gap-2 px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors cursor-pointer"
           >
             <LogIn size={20} />

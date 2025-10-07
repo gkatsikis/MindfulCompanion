@@ -31,6 +31,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+SITE_ID = 1
+
 
 # Application definition
 
@@ -40,12 +42,14 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+    'django.contrib.sites',
     'django.contrib.staticfiles',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
-    'api'
+    'api',
+    'corsheaders',
 ]
 
 AUTHENTICATION_BACKENDS = [
@@ -56,6 +60,7 @@ AUTHENTICATION_BACKENDS = [
 AUTH_USER_MODEL = 'api.User'
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -127,6 +132,39 @@ SOCIALACCOUNT_PROVIDERS = {
         }
     }
 }
+
+SOCIALACCOUNT_AUTO_SIGNUP = True
+SOCIALACCOUNT_LOGIN_ON_GET = True
+ACCOUNT_EMAIL_VERIFICATION = 'none'
+
+FRONTEND_URL = os.getenv('FRONTEND_URL', 'could not retrieve frontend url...')
+
+LOGIN_REDIRECT_URL = FRONTEND_URL + '/'
+ACCOUNT_LOGIN_REDIRECT_URL = FRONTEND_URL + '/'
+
+CORS_ALLOW_CREDENTIALS = True
+
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:5173',
+    'http://127.0.0.1:5173',
+    FRONTEND_URL,
+]
+
+SESSION_COOKIE_SAMESITE = 'Lax'
+CSRF_COOKIE_SAMESITE = 'Lax'
+SESSION_COOKIE_SECURE = False  # keep false for dev env only
+CSRF_COOKIE_SECURE = False
+
+
+CSRF_TRUSTED_ORIGINS = [
+    'http://localhost:5173',
+    'http://127.0.0.1:5173',
+    'http://localhost:8001',
+    'http://127.0.0.1:8001',
+]
+
+# for development only
+# CORS_ALLOW_ALL_ORIGINS = True
 
 
 # Internationalization

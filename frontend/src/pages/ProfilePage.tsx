@@ -3,10 +3,9 @@ import { Calendar } from 'lucide-react';
 
 interface ProfilePageProps {
   onBackToJournal: () => void;
-  onLogout: () => void;
 }
 
-const ProfilePage: React.FC<ProfilePageProps> = ({ onBackToJournal, onLogout }) => {
+const ProfilePage: React.FC<ProfilePageProps> = ({ onBackToJournal }) => {
   return (
     <div className="max-w-6xl mx-auto p-6">
       {/* Header */}
