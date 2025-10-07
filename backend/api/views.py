@@ -1,7 +1,8 @@
 from django.http import JsonResponse
 from django.middleware.csrf import get_token
-from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import ensure_csrf_cookie
+from django.contrib.auth import logout as django_logout
+from django.views.decorators.http import require_http_methods
 
 
 def test_connection(request):
@@ -21,6 +22,7 @@ def csrf_token_view(request):
         'csrfToken': get_token(request)
     })
 
+
 def user_info_view(request):
     """
     Returns current user information
@@ -39,3 +41,20 @@ def user_info_view(request):
             'date_joined': user.date_joined.isoformat()
         }
     })
+
+
+@require_http_methods(["POST"])
+def logout_view(request):
+    """
+    API endpoint to logout user and clear session.
+    Designed for SPA usage (returns JSON, not HTML redirect).
+    """
+    if request.user.is_authenticated:
+        django_logout(request)
+
+    response = JsonResponse({'message': 'Logged out successfully'})
+
+    response.delete_cookie('sessionid')
+    response.delete_cookie('csrftoken')
+
+    return response

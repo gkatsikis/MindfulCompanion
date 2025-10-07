@@ -125,50 +125,11 @@ export const register = async (credentials: RegisterCredentials): Promise<AuthRe
 };
 
 // Google OAuth login (popup method)
-export const loginWithGoogle = async (): Promise<AuthResponse> => {
-    return new Promise((resolve, reject) => {
-        const popup = window.open(
-            `${BASE_URL}/accounts/google/login/?process=login`,
-            'google-login',
-            'width=500,height=600,scrollbars=yes,resizable=yes'
-        );
+export const loginWithGoogle = async (): Promise<void> => {
 
-        if (!popup) {
-            reject(new Error('Popup blocked. Please allow popups for this site.'));
-            return;
-        }
-
-        // Poll for popup completion
-        const pollTimer = setInterval(() => {
-            try {
-                if (popup.closed) {
-                    clearInterval(pollTimer);
-                    // Check if we got redirected back with success
-                    checkAuthStatus().then(resolve).catch(reject);
-                }
-                
-                // Check if popup URL changed to our success URL
-                if (popup.location.href.includes('/accounts/profile/') || 
-                    popup.location.href.includes('/?auth=success')) {
-                    clearInterval(pollTimer);
-                    popup.close();
-                    checkAuthStatus().then(resolve).catch(reject);
-                }
-            } catch (e) {
-                // Cross-origin error is expected while on Google's domain
-                // Just continue polling
-            }
-        }, 1000);
-
-        // Timeout after 5 minutes
-        setTimeout(() => {
-            clearInterval(pollTimer);
-            if (!popup.closed) {
-                popup.close();
-            }
-            reject(new Error('Login timeout'));
-        }, 300000);
-    });
+    sessionStorage.setItem('auth_redirect', window.location.pathname);
+    
+    window.location.href = `${BASE_URL}/accounts/google/login/?process=login`;
 };
 
 // Check current authentication status
@@ -200,12 +161,12 @@ export const checkAuthStatus = async (): Promise<AuthResponse | null> => {
     }
 };
 
-// Logout
+
 export const logout = async (): Promise<void> => {
     try {
         const csrfToken = await getCSRFToken();
         
-        await fetch(`${BASE_URL}/accounts/logout/`, {
+        await fetch(`${BASE_URL}/api/logout/`, {
             method: 'POST',
             headers: {
                 'X-CSRFToken': csrfToken,

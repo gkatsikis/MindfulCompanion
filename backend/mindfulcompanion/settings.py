@@ -133,17 +133,35 @@ SOCIALACCOUNT_PROVIDERS = {
     }
 }
 
+SOCIALACCOUNT_AUTO_SIGNUP = True
+SOCIALACCOUNT_LOGIN_ON_GET = True
+ACCOUNT_EMAIL_VERIFICATION = 'none'
+
+FRONTEND_URL = os.getenv('FRONTEND_URL', 'could not retrieve frontend url...')
+
+LOGIN_REDIRECT_URL = FRONTEND_URL + '/'
+ACCOUNT_LOGIN_REDIRECT_URL = FRONTEND_URL + '/'
+
 CORS_ALLOW_CREDENTIALS = True
 
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:5173',
     'http://127.0.0.1:5173',
+    FRONTEND_URL,
 ]
 
 SESSION_COOKIE_SAMESITE = 'Lax'
 CSRF_COOKIE_SAMESITE = 'Lax'
 SESSION_COOKIE_SECURE = False  # keep false for dev env only
 CSRF_COOKIE_SECURE = False
+
+
+CSRF_TRUSTED_ORIGINS = [
+    'http://localhost:5173',
+    'http://127.0.0.1:5173',
+    'http://localhost:8001',
+    'http://127.0.0.1:8001',
+]
 
 # for development only
 # CORS_ALLOW_ALL_ORIGINS = True

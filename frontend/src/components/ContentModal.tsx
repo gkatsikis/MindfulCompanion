@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import { Mail, Lock, User, Eye, EyeOff } from 'lucide-react';
-import { login, register, loginWithGoogle } from '../services/authService';
+import AuthForm from './authForm'
 
 
 interface User {
@@ -32,17 +31,6 @@ const ContentModal: React.FC<ContentModalProps> = ({
 }) => {
   const [copied, setCopied] = useState(false);
 
-  const [authMode, setAuthMode] = useState<'login' | 'register'>('login');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [authLoading, setAuthLoading] = useState(false);
-  const [authError, setAuthError] = useState('');
-
   const handleCopy = async () => {
     try {
       await navigator.clipboard.writeText(content);
@@ -68,10 +56,12 @@ const ContentModal: React.FC<ContentModalProps> = ({
         <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[80vh] flex flex-col">
           {/* Header */}
           <div className="flex justify-between items-center p-4 border-b">
-            <h2 className="text-lg font-semibold text-gray-800">{title}</h2>
+            <h2 className="text-lg font-semibold text-gray-800">
+              {title}
+            </h2>
             <button
               onClick={onClose}
-              className="text-gray-400 hover:text-gray-600 transition-colors"
+              className="text-gray-400 cursor-pointer hover:text-gray-600 transition-colors"
             >
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -81,10 +71,20 @@ const ContentModal: React.FC<ContentModalProps> = ({
           
           {/* Content */}
           <div className="p-4 overflow-y-auto flex-1">
-            <div className="text-gray-700 whitespace-pre-wrap">{content}</div>
+            {type === 'auth' ? (
+              // Render the AuthForm component
+              <AuthForm 
+                onAuthSuccess={onAuthSuccess!} 
+                onClose={onClose}
+              />
+            ) : (
+              // Regular content display
+              <div className="text-gray-700 whitespace-pre-wrap">{content}</div>
+            )}
           </div>
           
           {/* Footer with actions */}
+          {type !== 'auth' && (
           <div className="p-4 border-t flex justify-between items-center">
             <div className="text-sm text-gray-500">
               {type === 'sample' && "Use this sample text to get started"}
@@ -125,6 +125,7 @@ const ContentModal: React.FC<ContentModalProps> = ({
               </button>
             </div>
           </div>
+        )}
         </div>
       </div>
     </>
