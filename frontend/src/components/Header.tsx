@@ -1,4 +1,5 @@
 import React from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { User, LogIn } from 'lucide-react';
 import { useAuth } from '../contexts/authContext';
 
@@ -9,12 +10,22 @@ interface HeaderProps {
 
 const Header: React.FC<HeaderProps> = ({ onProfileClick, onLoginClick }) => {
   const { isLoggedIn, logout } = useAuth();
+  const location = useLocation();
+  const navigate = useNavigate();
+
 
   return (
-    <div className="grid justify-self-end items-center mb-8">
       <div className="flex items-center gap-4">
         {isLoggedIn ? (
           <>
+            {location.pathname === '/profile' ? (
+            <button
+              onClick={() => navigate('/')}
+              className="flex items-center gap-2 px-4 py-2 cursor-pointer text-gray-600 hover:text-blue-600 transition-colors"
+            >
+            ← Back to Journal
+            </button>
+            ) : (
             <button
               onClick={onProfileClick}
               className="flex items-center gap-2 px-4 py-2 text-gray-600 hover:text-blue-600 transition-colors cursor-pointer"
@@ -22,6 +33,7 @@ const Header: React.FC<HeaderProps> = ({ onProfileClick, onLoginClick }) => {
               <User size={20} />
               Profile
             </button>
+            )}
             <button
               onClick={logout}
               className="px-4 py-2 text-gray-600 hover:text-red-600 transition-colors cursor-pointer"
@@ -39,7 +51,6 @@ const Header: React.FC<HeaderProps> = ({ onProfileClick, onLoginClick }) => {
           </button>
         )}
       </div>
-    </div>
   );
 };
 

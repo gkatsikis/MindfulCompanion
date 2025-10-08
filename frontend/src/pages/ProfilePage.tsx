@@ -1,5 +1,6 @@
 import React from 'react';
 import { Calendar } from 'lucide-react';
+import Header from '../components/Header'
 
 interface ProfilePageProps {
   onBackToJournal: () => void;
@@ -14,19 +15,11 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ onBackToJournal }) => {
           Your Journal History
         </h1>
         
-        <div className="flex items-center gap-4">
-          <button
-            onClick={onBackToJournal}
-            className="px-4 py-2 text-gray-600 hover:text-blue-600 transition-colors"
-          >
-            ← Back to Journal
-          </button>
-          <button
-            onClick={onLogout}
-            className="px-4 py-2 text-gray-600 hover:text-red-600 transition-colors"
-          >
-            Logout
-          </button>
+        <div className="flex items-center">
+          <Header 
+            onProfileClick={() => {}}
+            onLoginClick={() => {}}
+          />
         </div>
       </div>
 
