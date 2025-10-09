@@ -6,7 +6,7 @@ from django.views.decorators.http import require_http_methods
 from .models import JournalEntry
 
 # DRF imports
-from rest_framework import viewsets, status
+from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
@@ -71,7 +71,7 @@ def logout_view(request):
 class JournalEntryViewSet(viewsets.ModelViewSet):
     """
     ViewSet for journal entry CRUD operations.
-    
+
     A ViewSet automatically provides these actions:
     - list (GET /api/journal-entries/) - Get all entries for logged-in user
     - create (POST /api/journal-entries/) - Create new entry
