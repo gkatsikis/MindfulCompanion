@@ -3,6 +3,7 @@ import type { HelpType } from '../types';
 import Header from '../components/Header';
 import ContentModal from '../components/ContentModal';
 import { useAuth } from '../contexts/authContext';
+import { createJournalEntry } from '../services/journalService'
 
 import { testConnection } from '../services/testService';
 
@@ -22,26 +23,82 @@ const JournalPage: React.FC<JournalPageProps> = ({
   const [modalTitle, setModalTitle] = useState<string>('');
   const [modalType, setModalType] = useState<'sample' | 'response' | 'default' | 'auth'>('default');
   const [showCopyButton, setShowCopyButton] = useState<boolean>(false);
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
   const handleSubmit = (helpType: HelpType): void => {
-    if (helpType === 'save_only') {
-      console.log('Saving entry only:', { title: journalTitle, content: journalContent });
-      // Here you'd save to your Django backend
-    } else {
-      console.log('Submitting for AI response:', { 
-        title: journalTitle, 
-        content: journalContent, 
-        helpType 
-      });
-      // Here you'd send to Django backend for Claude API processing
-    }
-    
-    // Clear form after submission
-    setJournalTitle('');
-    setJournalContent('');
+    setIsSubmitting(true);
 
-    // activate response modal?
+    try {
+      if (helpType === 'save_only' && isLoggedIn) {
+        console.log('Saving entry only (no AI Response)');
+
+        const savedEntry = await createJournalEntry({
+          title: journalTitle,
+          content: journalContent,
+          requested_help_type: null,
+          is_continuation: false,
+          references_past_entries: false,
+        });
+
+        console.log('Entry saved successfully:', savedEntry)
+
+        setModalTitle('Entry Saved');
+        setModalContent('Your entry has been saved successfully.'); // maybe put after real successful save
+        setModalType('default');
+        setShowCopyButton(false);
+        setShowModal(true);
+
+      } else if (isLoggedIn) {
+        console.log('Saving entry AND requesting AI response:', helpType);
+      
+        const savedEntry = await createJournalEntry({
+          title: journalTitle,
+          content: journalContent,
+          requested_help_type: helpType,
+          is_continuation: false,
+          references_past_entries: false,
+        });
+
+        console.log('Entry saved:', savedEntry);
+      
+        // TODO: Send to Claude API for AI response
+        setModalTitle('AI Response Coming Soon');
+        setModalContent('Your entry has been saved. AI integration will be implemented next!');
+        setModalType('response');
+        setShowCopyButton(false);
+        setShowModal(true);
+
+      } else {
+        console.log('Anonymous user requesting AI response:', helpType);
+      
+        // TODO: Send directly to Claude API without saving to DB
+        setModalTitle('AI Response Coming Soon');
+        setModalContent('This will send your entry to Claude without saving. AI integration coming next!');
+        setModalType('response');
+        setShowCopyButton(false);
+        setShowModal(true);
+      }
     
+      // Clear form after submission
+      setJournalTitle('');
+      setJournalContent('');
+
+    } catch (error) {
+      console.error('Error submitting journal entry:', error);
+
+      setModalTitle('Error');
+      setModalContent(
+        error instanceof Error
+        ? error.message
+        : 'Failed to submit your entry. Please try again.'
+      );
+
+      setModalType('default');
+      setShowCopyButton(false);
+      setShowModal(true);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleTestConnection = async (): Promise<void> => {
