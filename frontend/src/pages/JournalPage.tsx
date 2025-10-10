@@ -25,7 +25,7 @@ const JournalPage: React.FC<JournalPageProps> = ({
   const [showCopyButton, setShowCopyButton] = useState<boolean>(false);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
-  const handleSubmit = (helpType: HelpType): void => {
+  const handleSubmit = async (helpType: HelpType): Promise<void> => {
     setIsSubmitting(true);
 
     try {
@@ -157,12 +157,11 @@ const JournalPage: React.FC<JournalPageProps> = ({
         </h1>
         {isLoggedIn ? (
           <button
-            // onClick={() => handleSubmit('save_only')}
-            onClick={handleTestConnection}
-            disabled={!journalContent.trim()}
-            className="px-8 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg border-2 border-gray-300 hover:border-gray-400 transition-all disabled:opacity-50 cursor-pointer"
+            onClick={() => handleSubmit('save_only')}
+            disabled={!journalContent.trim() || isSubmitting}
+            className="px-8 py-3 bg-gray-100 cursor-pointer hover:bg-gray-200 text-gray-700 rounded-lg border-2 border-gray-300 hover:border-gray-400 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            Save Only (No Response)
+            {isSubmitting ? 'Saving...' : 'Save Only (No Response)'}
           </button>
           ) : (
             <button
@@ -200,8 +199,8 @@ const JournalPage: React.FC<JournalPageProps> = ({
         <button
           // onClick={() => handleSubmit('acute_validation')}
           onClick={handleTestConnection}
-          disabled={!journalContent.trim()}
-          className="p-4 bg-blue-50 hover:bg-blue-100 text-blue-700 rounded-lg border-2 border-blue-200 hover:border-blue-300 transition-all disabled:opacity-50 cursor-pointer"
+          disabled={!journalContent.trim() || isSubmitting}
+          className="p-4 bg-blue-50 hover:bg-blue-100 text-blue-700 rounded-lg border-2 border-blue-200 hover:border-blue-300 transition-all disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed"
         >
           <div className="font-medium mb-1">Just Listen</div>
           <div className="text-sm opacity-75">I need someone to hear me</div>
@@ -210,8 +209,8 @@ const JournalPage: React.FC<JournalPageProps> = ({
         <button
           // onClick={() => handleSubmit('acute_skills')}
           onClick={handleTestConnection}
-          disabled={!journalContent.trim()}
-          className="p-4 bg-green-50 hover:bg-green-100 text-green-700 rounded-lg border-2 border-green-200 hover:border-green-300 transition-all disabled:opacity-50 cursor-pointer"
+          disabled={!journalContent.trim() || isSubmitting}
+          className="p-4 bg-green-50 hover:bg-green-100 text-green-700 rounded-lg border-2 border-green-200 hover:border-green-300 transition-all disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed"
         >
           <div className="font-medium mb-1">Quick Help</div>
           <div className="text-sm opacity-75">I need coping techniques now</div>
@@ -223,8 +222,8 @@ const JournalPage: React.FC<JournalPageProps> = ({
         <>
         <button
           onClick={() => handleSubmit('chronic_validation')}
-          disabled={!journalContent.trim()}
-          className="p-4 bg-purple-50 hover:bg-purple-100 text-purple-700 rounded-lg border-2 border-purple-200 hover:border-purple-300 transition-all disabled:opacity-50 cursor-pointer"
+          disabled={!journalContent.trim() || isSubmitting}
+          className="p-4 bg-purple-50 hover:bg-purple-100 text-purple-700 rounded-lg border-2 border-purple-200 hover:border-purple-300 transition-all disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed"
         >
           <div className="font-medium mb-1">Ongoing Support</div>
           <div className="text-sm opacity-75">Support for long-term issues</div>
@@ -232,8 +231,8 @@ const JournalPage: React.FC<JournalPageProps> = ({
         
         <button
           onClick={() => handleSubmit('chronic_education')}
-          disabled={!journalContent.trim()}
-          className="p-4 bg-orange-50 hover:bg-orange-100 text-orange-700 rounded-lg border-2 border-orange-200 hover:border-orange-300 transition-all disabled:opacity-50 cursor-pointer"
+          disabled={!journalContent.trim() || isSubmitting}
+          className="p-4 bg-orange-50 hover:bg-orange-100 text-orange-700 rounded-lg border-2 border-orange-200 hover:border-orange-300 transition-all disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed"
         >
           <div className="font-medium mb-1">Learn Patterns</div>
           <div className="text-sm opacity-75">Help me understand trends</div>
