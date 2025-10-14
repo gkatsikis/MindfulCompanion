@@ -197,8 +197,7 @@ const JournalPage: React.FC<JournalPageProps> = ({
       {/* Action Buttons */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4 place-items-center">
         <button
-          // onClick={() => handleSubmit('acute_validation')}
-          onClick={handleTestConnection}
+          onClick={() => handleSubmit('acute_validation')}
           disabled={!journalContent.trim() || isSubmitting}
           className="p-4 bg-blue-50 hover:bg-blue-100 text-blue-700 rounded-lg border-2 border-blue-200 hover:border-blue-300 transition-all disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed"
         >
@@ -207,8 +206,7 @@ const JournalPage: React.FC<JournalPageProps> = ({
         </button>
         
         <button
-          // onClick={() => handleSubmit('acute_skills')}
-          onClick={handleTestConnection}
+          onClick={() => handleSubmit('acute_skills')}
           disabled={!journalContent.trim() || isSubmitting}
           className="p-4 bg-green-50 hover:bg-green-100 text-green-700 rounded-lg border-2 border-green-200 hover:border-green-300 transition-all disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed"
         >
