@@ -3,6 +3,7 @@ from django.middleware.csrf import get_token
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.contrib.auth import logout as django_logout
 from django.views.decorators.http import require_http_methods
+from django.utils import timezone
 from .models import JournalEntry
 
 # DRF imports
@@ -10,6 +11,7 @@ from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.exceptions import ValidationError
 from .serializers import JournalEntrySerializer, JournalEntryListSerializer
 
 
@@ -101,9 +103,23 @@ class JournalEntryViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         """
         Automatically set the user when creating a new entry.
-        The frontend doesn't need to send the user field - we get it from the session.
+        Enforces one entry per day rule.
         """
-        serializer.save(user=self.request.user)
+
+        user = self.request.user
+        today = timezone.now().date()
+
+        existing_entry = JournalEntry.objects.filter(
+            user=user,
+            created_at__date=today
+        ).exists()
+
+        if existing_entry:
+            raise ValidationError(
+                "You've already written an entry today. Visit your profile to view or delete it."
+            )
+
+        serializer.save(user=user)
 
     @action(detail=True, methods=['get'])
     def context_entries(self, request, pk=None):
