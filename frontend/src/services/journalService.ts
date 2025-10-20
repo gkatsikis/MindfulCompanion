@@ -26,7 +26,8 @@ export const createJournalEntry = async (
 
     if (!response.ok) {
       const errorData = await response.json();
-      throw new Error(errorData.detail || `Failed to create entry: ${response.status}`);
+      const errorMessage = errorData[0] || `Failed to create entry: ${response.status}`;
+      throw new Error(errorMessage);
     }
 
     return await response.json();
