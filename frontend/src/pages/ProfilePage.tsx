@@ -1,12 +1,46 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Calendar } from 'lucide-react';
-import Header from '../components/Header'
+import Header from '../components/Header';
+import { getJournalEntries } from '../services/journalService';
+import type { JournalEntryListItem } from '../types';
 
 interface ProfilePageProps {
   onBackToJournal: () => void;
 }
 
 const ProfilePage: React.FC<ProfilePageProps> = ({ onBackToJournal }) => {
+  const [entries, setEntries] = useState<JournalEntryListItem[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+  const [currentDate, setCurrentDate] = useState<Date>(new Date());
+
+  const filterEntriesByMonth = (entries: JournalEntryListItem[], date: Date) => {
+  return entries.filter(entry => {
+    const entryDate = new Date(entry.created_at);
+    return entryDate.getMonth() === date.getMonth() && 
+           entryDate.getFullYear() === date.getFullYear();
+    });
+  };
+
+  useEffect(() => {
+    const fetchEntries = async () => {
+    try {
+      setIsLoading(true);
+      const allEntries = await getJournalEntries();
+      const monthEntries = filterEntriesByMonth(allEntries, currentDate);
+      setEntries(monthEntries);
+      setError(null);
+    } catch (err) {
+      console.error('Error fetching entries:', err);
+      setError('Failed to load journal entries');
+    } finally {
+      setIsLoading(false);
+    }
+    };
+
+    fetchEntries();
+}, [currentDate]);
+
   return (
     <div className="max-w-6xl mx-auto p-6">
       {/* Header */}
