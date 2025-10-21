@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Calendar } from 'lucide-react';
+import Calendar from '../components/Calendar';
 import Header from '../components/Header';
-import { getJournalEntries } from '../services/journalService';
-import type { JournalEntryListItem } from '../types';
+import ContentModal from '../components/ContentModal';
+import { getJournalEntries, getJournalEntry } from '../services/journalService';
+import type { JournalEntryListItem, JournalEntry } from '../types';
 
 interface ProfilePageProps {
   onBackToJournal: () => void;
@@ -13,6 +14,11 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ onBackToJournal }) => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [currentDate, setCurrentDate] = useState<Date>(new Date());
+
+  // modal state
+  const [showModal, setShowModal] = useState<boolean>(false);
+  const [selectedEntry, setSelectedEntry] = useState<JournalEntry | null>(null);
+  const [isFetchingEntry, setIsFetchingEntry] = useState<boolean>(false);
 
   const filterEntriesByMonth = (entries: JournalEntryListItem[], date: Date) => {
   return entries.filter(entry => {
@@ -39,7 +45,46 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ onBackToJournal }) => {
     };
 
     fetchEntries();
-}, [currentDate]);
+  }, [currentDate]);
+
+  const handleMonthChange = (direction: 'prev' | 'next') => {
+    setCurrentDate(prevDate => {
+      const newDate = new Date(prevDate);
+      if (direction === 'prev') {
+        newDate.setMonth(newDate.getMonth() - 1);
+      } else {
+        newDate.setMonth(newDate.getMonth() + 1);
+      }
+      return newDate;
+    });
+  };
+
+  const handleEntryClick = async (entry: JournalEntryListItem) => {
+    try {
+      setIsFetchingEntry(true);
+      const fullEntry = await getJournalEntry(entry.id);
+      setSelectedEntry(fullEntry);
+      setShowModal(true);
+    } catch (err) {
+      console.error('Error fetching full entry:', err);
+      setError('Failed to load entry details');
+    } finally {
+      setIsFetchingEntry(false);
+    }
+  };
+
+  const getModalContent = () => {
+    if (!selectedEntry) return '';
+    
+    let content = selectedEntry.content;
+    
+    // Add AI response if it exists
+    if (selectedEntry.ai_interaction) {
+      content += '\n\n--- AI Response ---\n\n' + selectedEntry.ai_interaction.claude_response;
+    }
+    
+    return content;
+  };
 
   return (
     <div className="max-w-6xl mx-auto p-6">
@@ -57,17 +102,45 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ onBackToJournal }) => {
         </div>
       </div>
 
-      {/* Calendar View Placeholder */}
-      <div className="bg-white rounded-xl shadow-lg p-8 text-center">
-        <Calendar size={64} className="mx-auto mb-4 text-gray-400" />
-        <h3 className="text-xl font-medium text-gray-700 mb-2">Calendar View</h3>
-        <p className="text-gray-500 mb-4">
-          Click on any day with a journal entry to view your past reflections
-        </p>
-        <div className="text-sm text-gray-400">
-          Calendar component needs to hang out right here
+      {/* Error Message */}
+      {error && (
+        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-6">
+          {error}
         </div>
-      </div>
+      )}
+
+      {/* Loading State */}
+      {isLoading ? (
+        <div className="bg-white rounded-xl shadow-lg p-8 text-center">
+          <div className="text-gray-500">Loading entries...</div>
+        </div>
+      ) : (
+        <Calendar
+          entries={entries}
+          currentDate={currentDate}
+          onMonthChange={handleMonthChange}
+          onEntryClick={handleEntryClick}
+        />
+      )}
+
+      {/* Entry Detail Modal */}
+      <ContentModal
+        show={showModal}
+        onClose={() => setShowModal(false)}
+        title={selectedEntry?.title || 'Journal Entry'}
+        content={getModalContent()}
+        showCopyButton={false}
+        type="default"
+      />
+
+      {/* Loading overlay when fetching entry details */}
+      {isFetchingEntry && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6">
+            <div className="text-gray-700">Loading entry...</div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
