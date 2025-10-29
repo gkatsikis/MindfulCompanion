@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Calendar from '../components/Calendar';
 import Header from '../components/Header';
 import ContentModal from '../components/ContentModal';
-import { getJournalEntries, getJournalEntry } from '../services/journalService';
+import { getJournalEntries, getJournalEntry, deleteJournalEntry } from '../services/journalService';
 import type { JournalEntryListItem, JournalEntry } from '../types';
 
 interface ProfilePageProps {
@@ -14,6 +14,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ onBackToJournal }) => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [currentDate, setCurrentDate] = useState<Date>(new Date());
+  const [showSuccessToast, setShowSuccessToast] = useState<boolean>(false);
 
   // modal state
   const [showModal, setShowModal] = useState<boolean>(false);
@@ -70,6 +71,31 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ onBackToJournal }) => {
       setError('Failed to load entry details');
     } finally {
       setIsFetchingEntry(false);
+    }
+  };
+
+  const handleDeleteEntry = async () => {
+    if (!selectedEntry) return;
+
+    try {
+      await deleteJournalEntry(selectedEntry.id);
+      
+      // Show success toast
+      setShowSuccessToast(true);
+      setTimeout(() => setShowSuccessToast(false), 3000);
+      
+      // Close modal
+      setShowModal(false);
+      
+      // Refresh entries
+      const allEntries = await getJournalEntries();
+      const monthEntries = filterEntriesByMonth(allEntries, currentDate);
+      setEntries(monthEntries);
+      
+      setSelectedEntry(null);
+    } catch (err) {
+      console.error('Error deleting entry:', err);
+      setError('Failed to delete entry');
     }
   };
 
@@ -131,6 +157,8 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ onBackToJournal }) => {
         content={getModalContent()}
         showCopyButton={false}
         type="default"
+        showDeleteButton={true}
+        onDelete={handleDeleteEntry}
       />
 
       {/* Loading overlay when fetching entry details */}
