@@ -9,8 +9,8 @@ class User(AbstractUser):
     """
 
     email = models.EmailField(unique=True)
-    first_name = models.CharField(blank=True)
-    last_name = models.CharField(blank=True)
+    first_name = models.CharField(max_length=150, blank=True)
+    last_name = models.CharField(max_length=150, blank=True)
 
     date_joined = models.DateTimeField(auto_now_add=True)
 
@@ -54,7 +54,7 @@ class JournalEntry(models.Model):
         ('max_assessment', 'max_assessment')
     ]
 
-    requested_help_type = models.CharField(max_length=20, choices=HELP_TYPE_CHOICES, help_text='What kind of support do you need today?')
+    requested_help_type = models.CharField(max_length=20, choices=HELP_TYPE_CHOICES, blank=True, null=True, help_text='What kind of support do you need today?')
 
     is_continuation = models.BooleanField(default=False, help_text='Is this continuing a theme from recent entries?')
     references_past_entries = models.BooleanField(default=False, help_text='Does this entry reference previous journal entries?')
@@ -70,9 +70,13 @@ class JournalEntry(models.Model):
         Determine how many previous entries Claude should see based on help type
         Returns number of previous entries to include as context
         """
+        
+        if not self.requested_help_type:
+            return 0
+
         context_rules = {
             'acute_validation': 0,
-            'acute_skills': 1,
+            'acute_skills': 0,
             'chronic_education': 7,
             'chronic_validation': 7,
             'max_assessment': 30,

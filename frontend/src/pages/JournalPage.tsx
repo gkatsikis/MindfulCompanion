@@ -3,6 +3,7 @@ import type { HelpType } from '../types';
 import Header from '../components/Header';
 import ContentModal from '../components/ContentModal';
 import { useAuth } from '../contexts/authContext';
+import { createJournalEntry } from '../services/journalService'
 
 import { testConnection } from '../services/testService';
 
@@ -22,26 +23,82 @@ const JournalPage: React.FC<JournalPageProps> = ({
   const [modalTitle, setModalTitle] = useState<string>('');
   const [modalType, setModalType] = useState<'sample' | 'response' | 'default' | 'auth'>('default');
   const [showCopyButton, setShowCopyButton] = useState<boolean>(false);
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
-  const handleSubmit = (helpType: HelpType): void => {
-    if (helpType === 'save_only') {
-      console.log('Saving entry only:', { title: journalTitle, content: journalContent });
-      // Here you'd save to your Django backend
-    } else {
-      console.log('Submitting for AI response:', { 
-        title: journalTitle, 
-        content: journalContent, 
-        helpType 
-      });
-      // Here you'd send to Django backend for Claude API processing
+  const handleSubmit = async (helpType: HelpType): Promise<void> => {
+    setIsSubmitting(true);
+
+    try {
+      if (helpType === 'save_only' && isLoggedIn) {
+        console.log('Saving entry only (no AI Response)');
+
+        const savedEntry = await createJournalEntry({
+          title: journalTitle,
+          content: journalContent,
+          requested_help_type: null,
+          is_continuation: false,
+          references_past_entries: false,
+        });
+
+        console.log('Entry saved successfully:', savedEntry)
+
+        setModalTitle('Entry Saved');
+        setModalContent('Your entry has been saved successfully.'); // maybe put after real successful save
+        setModalType('default');
+        setShowCopyButton(false);
+        setShowModal(true);
+
+      } else if (isLoggedIn) {
+        console.log('Saving entry AND requesting AI response:', helpType);
+      
+        const savedEntry = await createJournalEntry({
+          title: journalTitle,
+          content: journalContent,
+          requested_help_type: helpType,
+          is_continuation: false,
+          references_past_entries: false,
+        });
+
+        console.log('Entry saved:', savedEntry);
+      
+        // TODO: Send to Claude API for AI response
+        setModalTitle('AI Response Coming Soon');
+        setModalContent('Your entry has been saved. AI integration will be implemented next!');
+        setModalType('response');
+        setShowCopyButton(false);
+        setShowModal(true);
+
+      } else {
+        console.log('Anonymous user requesting AI response:', helpType);
+      
+        // TODO: Send directly to Claude API without saving to DB
+        setModalTitle('AI Response Coming Soon');
+        setModalContent('This will send your entry to Claude without saving. AI integration coming next!');
+        setModalType('response');
+        setShowCopyButton(false);
+        setShowModal(true);
+      }
+    
+      // Clear form after submission
+      setJournalTitle('');
+      setJournalContent('');
+
+    } catch (error) {
+      console.error('Error submitting journal entry:', error);
+
+      setModalTitle('Error');
+      setModalContent(
+        error instanceof Error
+        ? error.message
+        : 'Failed to submit your entry. Please try again.'
+      );
+
+      setModalType('default');
+      setShowCopyButton(false);
+      setShowModal(true);
+    } finally {
+      setIsSubmitting(false);
     }
-    
-    // Clear form after submission
-    setJournalTitle('');
-    setJournalContent('');
-
-    // activate response modal?
-    
   };
 
   const handleTestConnection = async (): Promise<void> => {
@@ -77,10 +134,12 @@ const JournalPage: React.FC<JournalPageProps> = ({
 
   return (
     <div className="max-w-4xl mx-auto p-6">
-      <Header
-        onProfileClick={onProfileClick}
-        onLoginClick={handleLoginClick}
-      />
+      <div className="grid justify-self-end items-center mb-8">
+        <Header
+          onProfileClick={onProfileClick}
+          onLoginClick={handleLoginClick}
+        />
+      </div>
 
       <ContentModal
         show={showModal}
@@ -98,12 +157,11 @@ const JournalPage: React.FC<JournalPageProps> = ({
         </h1>
         {isLoggedIn ? (
           <button
-            // onClick={() => handleSubmit('save_only')}
-            onClick={handleTestConnection}
-            disabled={!journalContent.trim()}
-            className="px-8 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg border-2 border-gray-300 hover:border-gray-400 transition-all disabled:opacity-50 cursor-pointer"
+            onClick={() => handleSubmit('save_only')}
+            disabled={!journalContent.trim() || isSubmitting}
+            className="px-8 py-3 bg-gray-100 cursor-pointer hover:bg-gray-200 text-gray-700 rounded-lg border-2 border-gray-300 hover:border-gray-400 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            Save Only (No Response)
+            {isSubmitting ? 'Saving...' : 'Save Only (No Response)'}
           </button>
           ) : (
             <button
@@ -139,20 +197,18 @@ const JournalPage: React.FC<JournalPageProps> = ({
       {/* Action Buttons */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4 place-items-center">
         <button
-          // onClick={() => handleSubmit('acute_validation')}
-          onClick={handleTestConnection}
-          disabled={!journalContent.trim()}
-          className="p-4 bg-blue-50 hover:bg-blue-100 text-blue-700 rounded-lg border-2 border-blue-200 hover:border-blue-300 transition-all disabled:opacity-50 cursor-pointer"
+          onClick={() => handleSubmit('acute_validation')}
+          disabled={!journalContent.trim() || isSubmitting}
+          className="p-4 bg-blue-50 hover:bg-blue-100 text-blue-700 rounded-lg border-2 border-blue-200 hover:border-blue-300 transition-all disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed"
         >
           <div className="font-medium mb-1">Just Listen</div>
           <div className="text-sm opacity-75">I need someone to hear me</div>
         </button>
         
         <button
-          // onClick={() => handleSubmit('acute_skills')}
-          onClick={handleTestConnection}
-          disabled={!journalContent.trim()}
-          className="p-4 bg-green-50 hover:bg-green-100 text-green-700 rounded-lg border-2 border-green-200 hover:border-green-300 transition-all disabled:opacity-50 cursor-pointer"
+          onClick={() => handleSubmit('acute_skills')}
+          disabled={!journalContent.trim() || isSubmitting}
+          className="p-4 bg-green-50 hover:bg-green-100 text-green-700 rounded-lg border-2 border-green-200 hover:border-green-300 transition-all disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed"
         >
           <div className="font-medium mb-1">Quick Help</div>
           <div className="text-sm opacity-75">I need coping techniques now</div>
@@ -164,8 +220,8 @@ const JournalPage: React.FC<JournalPageProps> = ({
         <>
         <button
           onClick={() => handleSubmit('chronic_validation')}
-          disabled={!journalContent.trim()}
-          className="p-4 bg-purple-50 hover:bg-purple-100 text-purple-700 rounded-lg border-2 border-purple-200 hover:border-purple-300 transition-all disabled:opacity-50 cursor-pointer"
+          disabled={!journalContent.trim() || isSubmitting}
+          className="p-4 bg-purple-50 hover:bg-purple-100 text-purple-700 rounded-lg border-2 border-purple-200 hover:border-purple-300 transition-all disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed"
         >
           <div className="font-medium mb-1">Ongoing Support</div>
           <div className="text-sm opacity-75">Support for long-term issues</div>
@@ -173,8 +229,8 @@ const JournalPage: React.FC<JournalPageProps> = ({
         
         <button
           onClick={() => handleSubmit('chronic_education')}
-          disabled={!journalContent.trim()}
-          className="p-4 bg-orange-50 hover:bg-orange-100 text-orange-700 rounded-lg border-2 border-orange-200 hover:border-orange-300 transition-all disabled:opacity-50 cursor-pointer"
+          disabled={!journalContent.trim() || isSubmitting}
+          className="p-4 bg-orange-50 hover:bg-orange-100 text-orange-700 rounded-lg border-2 border-orange-200 hover:border-orange-300 transition-all disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed"
         >
           <div className="font-medium mb-1">Learn Patterns</div>
           <div className="text-sm opacity-75">Help me understand trends</div>

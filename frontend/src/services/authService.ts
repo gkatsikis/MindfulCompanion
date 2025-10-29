@@ -32,7 +32,7 @@ interface CSRFResponse {
     csrfToken: string;
 }
 
-const getCSRFToken = async (): Promise<string> => {
+export const getCSRFToken = async (): Promise<string> => {
     try {
         const response = await fetch(`${BASE_URL}/api/csrf/`, {
             credentials: 'include',
