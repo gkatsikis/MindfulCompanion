@@ -26,6 +26,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-3drhlymuadqdp0%fu@2k^^s&czx#+4ceoj&4_w33a_90283&20'
 
+ANTHROPIC_API_KEY = os.getenv('ANTHROPIC_API_KEY')
+AI_MODEL = os.getenv('AI_MODEL', 'anthropic/claude-3-sonnet-20240229')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 

@@ -7,7 +7,7 @@ import type {
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
-// Create a new journal entry
+
 export const createJournalEntry = async (
   data: CreateJournalEntryData
 ): Promise<JournalEntry> => {
@@ -37,7 +37,7 @@ export const createJournalEntry = async (
   }
 };
 
-// Get all journal entries for the logged-in user
+
 export const getJournalEntries = async (): Promise<JournalEntryListItem[]> => {
   try {
     const response = await fetch(`${BASE_URL}/api/journal-entries/`, {
@@ -55,7 +55,7 @@ export const getJournalEntries = async (): Promise<JournalEntryListItem[]> => {
   }
 };
 
-// Get a single journal entry by ID with full details
+
 export const getJournalEntry = async (id: number): Promise<JournalEntry> => {
   try {
     const response = await fetch(`${BASE_URL}/api/journal-entries/${id}/`, {
@@ -73,7 +73,7 @@ export const getJournalEntry = async (id: number): Promise<JournalEntry> => {
   }
 };
 
-// Delete a journal entry
+
 export const deleteJournalEntry = async (id: number): Promise<void> => {
   try {
     const csrfToken = await getCSRFToken();
@@ -95,7 +95,7 @@ export const deleteJournalEntry = async (id: number): Promise<void> => {
   }
 };
 
-// Get context entries for a specific journal entry
+
 export const getContextEntries = async (id: number): Promise<{
   context_window_size: number;
   actual_entries_count: number;
