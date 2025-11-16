@@ -3,7 +3,7 @@ import type { HelpType } from '../types';
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
-/**
+/*
  * Response from AI generation for anonymous users
  */
 export interface AIResponse {
@@ -14,7 +14,7 @@ export interface AIResponse {
   help_type: HelpType;
 }
 
-/**
+/*
  * Response from AI generation for authenticated users (includes entry data)
  */
 export interface AIResponseWithEntry {
@@ -28,8 +28,8 @@ export interface AIResponseWithEntry {
   estimated_cost: number;
 }
 
-/**
- * Error response when AI generation fails but entry was saved
+/*
+ May have to tweak as we discover actual params
  */
 export interface AIErrorResponse {
   id: number;
@@ -40,13 +40,9 @@ export interface AIErrorResponse {
   ai_error: string;
 }
 
-/**
- * Get AI response for anonymous users (no save to database)
- * Only works with acute help types (acute_validation, acute_skills)
- * 
- * @param content - The journal entry content
- * @param helpType - Type of help requested (must be acute_validation or acute_skills)
- * @returns AI response data including tokens and cost
+/*
+ Get AI response for anonymous users (no save to database)
+ Only works with acute help types: acute_validation, acute_skills
  */
 export const getAIResponse = async (
   content: string,
@@ -86,14 +82,9 @@ export const getAIResponse = async (
   }
 };
 
-/**
+/*
  * Get AI response for authenticated users (saves entry + generates AI response)
  * Works with all help types
- * 
- * @param content - The journal entry content
- * @param helpType - Type of help requested (any valid HelpType)
- * @param title - Optional entry title
- * @returns Entry data with AI response, tokens, and cost
  */
 export const getAIResponseWithSave = async (
   content: string,
@@ -130,24 +121,18 @@ export const getAIResponseWithSave = async (
   }
 };
 
-/**
+/*
  * Check if a help type requires authentication
  * Acute types work for anonymous users, all others require login
- * 
- * @param helpType - The help type to check
- * @returns true if authentication is required
  */
 export const requiresAuthentication = (helpType: HelpType): boolean => {
   const acuteTypes: HelpType[] = ['acute_validation', 'acute_skills'];
   return !acuteTypes.includes(helpType);
 };
 
-/**
+/*
  * Get the number of context entries used for a given help type
  * Useful for showing users what context window they're using
- * 
- * @param helpType - The help type
- * @returns Number of previous entries Claude will see
  */
 export const getContextWindowSize = (helpType: HelpType): number => {
   const contextMap: Record<HelpType, number> = {
@@ -163,12 +148,9 @@ export const getContextWindowSize = (helpType: HelpType): number => {
   return contextMap[helpType] || 0;
 };
 
-/**
+/*
  * Get a human-readable description of what each help type does
  * Useful for UI tooltips or help text
- * 
- * @param helpType - The help type
- * @returns Description string
  */
 export const getHelpTypeDescription = (helpType: HelpType): string => {
   const descriptions: Record<HelpType, string> = {
