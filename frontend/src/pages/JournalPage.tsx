@@ -4,8 +4,8 @@ import Header from '../components/Header';
 import ContentModal from '../components/ContentModal';
 import { useAuth } from '../contexts/authContext';
 import { createJournalEntry } from '../services/journalService'
+import { getAIResponse, getAIResponseWithSave } from '../services/llmService';
 
-import { testConnection } from '../services/testService';
 
 interface JournalPageProps {
   onProfileClick: () => void;
@@ -43,7 +43,7 @@ const JournalPage: React.FC<JournalPageProps> = ({
         console.log('Entry saved successfully:', savedEntry)
 
         setModalTitle('Entry Saved');
-        setModalContent('Your entry has been saved successfully.'); // maybe put after real successful save
+        setModalContent('Your entry has been saved successfully.');
         setModalType('default');
         setShowCopyButton(false);
         setShowModal(true);
@@ -51,33 +51,46 @@ const JournalPage: React.FC<JournalPageProps> = ({
       } else if (isLoggedIn) {
         console.log('Saving entry AND requesting AI response:', helpType);
       
-        const savedEntry = await createJournalEntry({
-          title: journalTitle,
-          content: journalContent,
-          requested_help_type: helpType,
-          is_continuation: false,
-          references_past_entries: false,
-        });
+        const response = await getAIResponseWithSave(
+              journalContent,
+              helpType,
+              journalTitle || undefined
+            );
 
-        console.log('Entry saved:', savedEntry);
-      
-        // TODO: Send to Claude API for AI response
-        setModalTitle('AI Response Coming Soon');
-        setModalContent('Your entry has been saved. AI integration will be implemented next!');
-        setModalType('response');
-        setShowCopyButton(false);
-        setShowModal(true);
+            console.log('Entry saved with AI response:', response);
 
-      } else {
-        console.log('Anonymous user requesting AI response:', helpType);
-      
-        // TODO: Send directly to Claude API without saving to DB
-        setModalTitle('AI Response Coming Soon');
-        setModalContent('This will send your entry to Claude without saving. AI integration coming next!');
-        setModalType('response');
-        setShowCopyButton(false);
-        setShowModal(true);
-      }
+            // Check if AI generation succeeded or failed
+            if ('ai_response' in response) {
+              // Success: Show AI response
+              setModalTitle('AI Response');
+              setModalContent(response.ai_response);
+              setModalType('response');
+              setShowCopyButton(true); // Allow copying AI response
+              setShowModal(true);
+            } else if ('ai_error' in response) {
+              // Partial success: Entry saved but AI failed
+              setModalTitle('Entry Saved (AI Error)');
+              setModalContent(`Your entry was saved, but AI response failed: ${response.ai_error}`);
+              setModalType('default');
+              setShowCopyButton(false);
+              setShowModal(true);
+            }
+
+          } else {
+            console.log('Anonymous user requesting AI response:', helpType);
+
+            // Call LLM service for anonymous users (no save, just AI response)
+            const response = await getAIResponse(journalContent, helpType);
+
+            console.log('AI response for anonymous user:', response);
+
+            // Show AI response
+            setModalTitle('AI Response');
+            setModalContent(response.ai_response);
+            setModalType('response');
+            setShowCopyButton(true);
+            setShowModal(true);
+          }
     
       // Clear form after submission
       setJournalTitle('');
@@ -101,14 +114,6 @@ const JournalPage: React.FC<JournalPageProps> = ({
     }
   };
 
-  const handleTestConnection = async (): Promise<void> => {
-    try {
-      const result = await testConnection();
-      console.log(`Message: ${result.message}, Status: ${result.status}`);
-    } catch (error) {
-      console.log('Connection failed: ', error);
-    }
-  };
 
   const handleShowSampleText = (): void => {
     const sampleText = "Today I woke up sad, I felt hopeless and wasn't sure how to change my life."
