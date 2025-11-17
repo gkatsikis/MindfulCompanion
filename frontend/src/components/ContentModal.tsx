@@ -73,43 +73,56 @@ const ContentModal: React.FC<ContentModalProps> = ({
 >
   {/* Cloud 1 - Fluffy cluster */}
   <div 
-    className="absolute top-10 left-0"
+    className="absolute top-10"
     style={{
       animation: 'cloud-drift 58s linear infinite',
+      left: '10%', // Start 10% across the screen
     }}
   >
-    <div className="absolute w-32 h-32 bg-white/70 rounded-full blur-md" />
-    <div className="absolute left-20 top-2 w-40 h-40 bg-white/70 rounded-full blur-md" />
-    <div className="absolute left-40 top-4 w-28 h-28 bg-white/70 rounded-full blur-md" />
-    <div className="absolute left-12 top-16 w-36 h-36 bg-white/70 rounded-full blur-md" />
+    <div className="absolute w-48 h-48 bg-white/70 rounded-full blur-md" />
+    <div className="absolute left-32 top-4 w-56 h-56 bg-white/70 rounded-full blur-md" />
+    <div className="absolute left-64 top-8 w-40 h-40 bg-white/70 rounded-full blur-md" />
+    <div className="absolute left-20 top-24 w-52 h-52 bg-white/70 rounded-full blur-md" />
   </div>
   
   {/* Cloud 2 - Fluffy cluster */}
   <div 
-    className="absolute top-1/3 left-0"
+    className="absolute top-1/4"
     style={{
       animation: 'cloud-drift 61s linear infinite',
-      // animationDelay: '1s',
+      left: '-15%', // Start off-screen to the left
     }}
   >
-    <div className="absolute w-36 h-36 bg-white/65 rounded-full blur-md" />
-    <div className="absolute left-24 top-3 w-32 h-32 bg-white/65 rounded-full blur-md" />
-    <div className="absolute left-44 top-6 w-28 h-28 bg-white/65 rounded-full blur-md" />
+    <div className="absolute w-52 h-52 bg-white/65 rounded-full blur-md" />
+    <div className="absolute left-36 top-6 w-44 h-44 bg-white/65 rounded-full blur-md" />
+    <div className="absolute left-60 top-10 w-40 h-40 bg-white/65 rounded-full blur-md" />
   </div>
 
   {/* Cloud 3 - Medium cluster */}
-<div 
-  className="absolute top-1/2 left-0"
-  style={{
-    animation: 'cloud-drift 60s linear infinite',
-    // animationDelay: '1s',
-  }}
->
-  <div className="absolute w-36 h-36 bg-white/65 rounded-full blur-md" />
-  <div className="absolute left-24 top-3 w-32 h-32 bg-white/65 rounded-full blur-md" />
-  <div className="absolute left-42 top-5 w-28 h-28 bg-white/65 rounded-full blur-md" />
-</div>
-  
+  <div 
+    className="absolute top-1/2"
+    style={{
+      animation: 'cloud-drift 60s linear infinite',
+      left: '30%', // Start 30% across the screen
+    }}
+  >
+    <div className="absolute w-44 h-44 bg-white/65 rounded-full blur-md" />
+    <div className="absolute left-30 top-4 w-48 h-48 bg-white/65 rounded-full blur-md" />
+    <div className="absolute left-56 top-8 w-36 h-36 bg-white/65 rounded-full blur-md" />
+  </div>
+
+  {/* Cloud 4 - Small puff cluster */}
+  <div 
+    className="absolute top-3/4"
+    style={{
+      animation: 'cloud-drift 63s linear infinite',
+      left: '50%', // Start halfway across
+    }}
+  >
+    <div className="absolute w-40 h-40 bg-white/60 rounded-full blur-sm" />
+    <div className="absolute left-28 top-4 w-44 h-44 bg-white/60 rounded-full blur-sm" />
+    <div className="absolute left-52 top-8 w-32 h-32 bg-white/60 rounded-full blur-sm" />
+  </div>
 </div>
 
       
