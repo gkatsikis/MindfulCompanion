@@ -177,6 +177,8 @@ class TestAuthenticatedUserJournalCreation:
             }
             
             response = authenticated_client.post('/api/journal-entries/', {
+                'user': user,
+                'title': 'Stress4Lyfe',
                 'content': 'I am stressed',
                 'requested_help_type': 'acute_validation'
             })
@@ -248,6 +250,7 @@ class TestContextWindowLogic:
         The multiple_journal_entries fixture creates 10 entries.
         Chronic should fetch the 7 most recent ones.
         """
+
         with patch('api.views.llm_service.generate_journal_response') as mock_llm:
             mock_llm.return_value = {
                 'response': 'Based on your recent entries...',
@@ -256,22 +259,20 @@ class TestContextWindowLogic:
             }
             
             response = authenticated_client.post('/api/journal-entries/', {
+                'user': user,
+                'title': 'Repeat entry',
                 'content': 'New entry needing context',
                 'requested_help_type': 'chronic_validation'
             })
-        
         assert response.status_code == 201
         
-        # Verify context_entries was passed to LLM service
         mock_llm.assert_called_once()
         call_args = mock_llm.call_args
         
-        # Check that context_entries parameter was provided
         context_entries = call_args.kwargs['context_entries']
         assert context_entries is not None
-        assert len(context_entries) == 7  # Chronic uses 7 entries
+        assert len(context_entries) == 7
         
-        # Verify AIInteraction recorded correct context count
         ai_interaction = AIInteraction.objects.first()
         assert ai_interaction.context_entries_count == 7
 
@@ -296,6 +297,8 @@ class TestErrorHandling:
             mock_llm.side_effect = Exception('API timeout')
             
             response = authenticated_client.post('/api/journal-entries/', {
+                'user': user,
+                'title': 'Listen Here',
                 'content': 'Important journal entry',
                 'requested_help_type': 'acute_validation'
             })

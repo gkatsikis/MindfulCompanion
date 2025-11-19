@@ -2,6 +2,8 @@ import pytest
 from api.models import JournalEntry, AIInteraction, UserPreferences, User
 from rest_framework.test import APIClient
 from django.contrib.auth import get_user_model
+from django.utils import timezone
+from datetime import timedelta
 
 @pytest.fixture
 def api_client():
@@ -76,12 +78,19 @@ def multiple_journal_entries(user):
     Creates multiple journal entries for context window testing.
     """
     entries = []
+    yesterday = timezone.now() - timedelta(days=1)
+
     for i in range(10):
         entry = JournalEntry.objects.create(
             user=user,
             title=f'Entry {i+1}',
             content=f'Content for entry {i+1}',
-            requested_help_type='chronic_validation'
+            requested_help_type='chronic_validation',
         )
+        JournalEntry.objects.filter(pk=entry.pk).update(
+            created_at=yesterday - timedelta(days=i)
+        )
+        entry.refresh_from_db()
         entries.append(entry)
+
     return entries
