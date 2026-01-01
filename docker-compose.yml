@@ -1,6 +1,22 @@
-version: '3.8'
 
 services:
+  db:
+    image: postgres:16-alpine
+    container_name: mindfulcompanion-db
+    environment:
+      - POSTGRES_DB=mindfulcompanion
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - mindfulcompanion-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
   backend:
     build: ./backend
     container_name: mindfulcompanion-backend
@@ -10,16 +26,27 @@ services:
       - SECRET_KEY=dev-secret-key-change-in-production
       - DEBUG=True
       - ALLOWED_HOSTS=localhost,backend
+      - POSTGRES_DB=mindfulcompanion
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_HOST=db
+      - POSTGRES_PORT=5432
       - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
       - AI_MODEL=${AI_MODEL}
       - FRONTEND_URL=${FRONTEND_URL}
       - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
       - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
+    depends_on:
+      db:
+        condition: service_healthy
     networks:
       - mindfulcompanion-network
 
   frontend:
-    build: ./frontend
+    build:
+      context: ./frontend
+      args:
+        - VITE_API_BASE_URL=http://localhost:8000
     container_name: mindfulcompanion-frontend
     ports:
       - "3000:80"
@@ -31,3 +58,6 @@ services:
 networks:
   mindfulcompanion-network:
     driver: bridge
+
+volumes:
+  postgres_data:

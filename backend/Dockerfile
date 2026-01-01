@@ -27,8 +27,12 @@ COPY . .
 # Collect static files (Django admin, DRF browsable API)
 RUN python manage.py collectstatic --noinput
 
+# Copy entrypoint script
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
 # Expose port 8000
 EXPOSE 8000
 
-# Run gunicorn
-CMD ["gunicorn", "--bind", "0.0.0.0:8000", "--workers", "3", "mindfulcompanion.wsgi:application"]
+# Run entrypoint script
+ENTRYPOINT ["/entrypoint.sh"]
