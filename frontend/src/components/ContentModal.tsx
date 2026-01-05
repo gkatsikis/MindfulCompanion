@@ -197,12 +197,21 @@ const ContentModal: React.FC<ContentModalProps> = ({
           
           {/* Footer with actions */}
           {type !== 'auth' && (
-            <div className="p-6 border-t border-purple-100/50 bg-gradient-to-r from-purple-50/30 via-pink-50/30 to-blue-50/30 flex justify-between items-center">
-              <div className="text-sm text-gray-500 font-light italic">
-                {type === 'sample' && "Use this sample text to get started"}
-                {type === 'response' && "AI Response"}
-              </div>
-              <div className="flex gap-2">
+            <div className="p-6 border-t border-purple-100/50 bg-gradient-to-r from-purple-50/30 via-pink-50/30 to-blue-50/30">
+              {/* Disclaimer for AI responses */}
+              {type === 'response' && (
+                <div className="mb-4 text-xs text-gray-500 font-light italic flex items-start gap-1">
+                  <span className="text-gray-400">*</span>
+                  <span>This is not a replacement for professional mental health support and is intended for educational purposes only.</span>
+                </div>
+              )}
+
+              <div className="flex justify-between items-center">
+                <div className="text-sm text-gray-500 font-light italic">
+                  {type === 'sample' && "Use this sample text to get started"}
+                  {type === 'response' && "AI Response"}
+                </div>
+                <div className="flex gap-2">
                 {showCopyButton && (
                   <button
                     onClick={handleCopy}
@@ -236,6 +245,7 @@ const ContentModal: React.FC<ContentModalProps> = ({
                   Close
                 </button>
               </div>
+            </div>
             </div>
           )}
         </div>
