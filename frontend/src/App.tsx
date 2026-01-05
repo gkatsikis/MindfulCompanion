@@ -1,7 +1,6 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { BrowserRouter, Routes, Route, useNavigate } from 'react-router-dom';
 
-import type { Page } from './types';
 import JournalPage from './pages/JournalPage';
 import ProfilePage from './pages/ProfilePage';
 import { AuthProvider } from './contexts/authContext';
@@ -24,10 +23,6 @@ const AppContent: React.FC = () => {
     navigate('/profile');
   };
 
-  const handleBackToJournal = (): void => {
-    navigate('/');
-  };
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
       <Routes>
@@ -42,9 +37,7 @@ const AppContent: React.FC = () => {
         <Route 
           path='/profile'
           element={
-            <ProfilePage
-              onBackToJournal={handleBackToJournal}
-            />
+            <ProfilePage />
           }
         />
       </Routes>

@@ -5,16 +5,13 @@ import ContentModal from '../components/ContentModal';
 import { getJournalEntries, getJournalEntry, deleteJournalEntry } from '../services/journalService';
 import type { JournalEntryListItem, JournalEntry } from '../types';
 
-interface ProfilePageProps {
-  onBackToJournal: () => void;
-}
+interface ProfilePageProps {}
 
-const ProfilePage: React.FC<ProfilePageProps> = ({ onBackToJournal }) => {
+const ProfilePage: React.FC<ProfilePageProps> = ({}) => {
   const [entries, setEntries] = useState<JournalEntryListItem[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [currentDate, setCurrentDate] = useState<Date>(new Date());
-  const [showSuccessToast, setShowSuccessToast] = useState<boolean>(false);
 
   // modal state
   const [showModal, setShowModal] = useState<boolean>(false);
@@ -79,10 +76,6 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ onBackToJournal }) => {
 
     try {
       await deleteJournalEntry(selectedEntry.id);
-      
-      // Show success toast
-      setShowSuccessToast(true);
-      setTimeout(() => setShowSuccessToast(false), 3000);
       
       // Close modal
       setShowModal(false);

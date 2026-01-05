@@ -14,7 +14,7 @@ interface JournalPageProps {
 const JournalPage: React.FC<JournalPageProps> = ({
   onProfileClick 
 }) => {
-  const { isLoggedIn, user, login } = useAuth();
+  const { isLoggedIn, login } = useAuth();
 
   const [journalTitle, setJournalTitle] = useState<string>('');
   const [journalContent, setJournalContent] = useState<string>('');
