@@ -1,5 +1,5 @@
 # Use Python 3.11 slim image (smaller size, faster builds)
-FROM python:3.11-slim
+FROM python:3.11-slim AS base
 
 # Set environment variables
 ENV PYTHONDONTWRITEBYTECODE=1
@@ -27,12 +27,16 @@ COPY . .
 # Collect static files (Django admin, DRF browsable API)
 RUN python manage.py collectstatic --noinput
 
-# Copy entrypoint script
-COPY entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
-
 # Expose port 8000
 EXPOSE 8000
 
+FROM base AS local
+# Copy entrypoint script
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
 # Run entrypoint script
 ENTRYPOINT ["/entrypoint.sh"]
+
+
+FROM base AS production
+CMD ["sh", "-c", "python manage.py migrate --noinput && gunicorn --bind 0.0.0.0:8000 --workers 3 mindfulcompanion.wsgi:application"]
