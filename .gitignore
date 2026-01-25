@@ -30,6 +30,14 @@ local_settings.py
 .env.*.local
 *.env
 
+# Certificates & Keys
+certs/
+*.key
+*.pem
+*.crt
+*.p12
+*.pfx
+
 # IDE & Editor Files
 .vscode/
 .idea/
