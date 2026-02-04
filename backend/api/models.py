@@ -42,7 +42,7 @@ class JournalEntry(models.Model):
 
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='journal_entries')
 
-    title = models.CharField(max_length=200, blank=True)
+    title = models.CharField(max_length=200, blank=True, null=True)
     content = models.TextField(help_text='the journal entry content')
 
     HELP_TYPE_CHOICES = [
