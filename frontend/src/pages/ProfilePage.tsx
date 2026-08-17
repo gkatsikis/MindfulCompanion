@@ -106,32 +106,35 @@ const ProfilePage: React.FC<ProfilePageProps> = ({}) => {
   };
 
   return (
-    <div className="max-w-6xl mx-auto p-6">
+    <div className="max-w-6xl mx-auto px-6 py-8">
       {/* Header */}
-      <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-light text-gray-800">
-          Your Journal History
+      <div className="mb-12">
+        <Header
+          onProfileClick={() => {}}
+          onLoginClick={() => {}}
+        />
+      </div>
+
+      <div className="mb-8">
+        <h1 className="font-display font-light text-4xl text-ink">
+          Your journal, <em className="text-dawn-deep">so far</em>
         </h1>
-        
-        <div className="flex items-center">
-          <Header 
-            onProfileClick={() => {}}
-            onLoginClick={() => {}}
-          />
-        </div>
+        <p className="mt-2 text-ink-soft">
+          Each marked day holds an entry. Tap one to revisit it.
+        </p>
       </div>
 
       {/* Error Message */}
       {error && (
-        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-6">
+        <div className="bg-rose-50 border border-rose-100 text-rose-800 px-5 py-4 rounded-2xl mb-6">
           {error}
         </div>
       )}
 
       {/* Loading State */}
       {isLoading ? (
-        <div className="bg-white rounded-xl shadow-lg p-8 text-center">
-          <div className="text-gray-500">Loading entries...</div>
+        <div className="bg-card rounded-3xl shadow-soft ring-1 ring-ink/5 p-10 text-center">
+          <span className="breathe text-ink-soft">Gathering your entries…</span>
         </div>
       ) : (
         <Calendar
@@ -156,9 +159,9 @@ const ProfilePage: React.FC<ProfilePageProps> = ({}) => {
 
       {/* Loading overlay when fetching entry details */}
       {isFetchingEntry && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6">
-            <div className="text-gray-700">Loading entry...</div>
+        <div className="fade-in fixed inset-0 bg-dusk/40 backdrop-blur-sm flex items-center justify-center z-50">
+          <div className="bg-card rounded-2xl shadow-lift px-8 py-5">
+            <span className="breathe text-ink-soft">Opening entry…</span>
           </div>
         </div>
       )}

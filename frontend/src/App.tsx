@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, useNavigate } from 'react-router-dom';
 
 import JournalPage from './pages/JournalPage';
 import ProfilePage from './pages/ProfilePage';
+import Clouds from './components/Clouds';
 import { AuthProvider } from './contexts/authContext';
 
 const App: React.FC = () => {
@@ -24,7 +25,8 @@ const AppContent: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
+    <div className="min-h-screen">
+      <Clouds variant="page" />
       <Routes>
         <Route
           path='/'

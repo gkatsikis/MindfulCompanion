@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
+import { Ear, Sparkles, Sprout, Waves, Feather } from 'lucide-react';
 import type { HelpType } from '../types';
 import Header from '../components/Header';
 import ContentModal from '../components/ContentModal';
+import Clouds from '../components/Clouds';
 import { useAuth } from '../contexts/authContext';
 import { createJournalEntry } from '../services/journalService'
 import { getAIResponse, getAIResponseWithSave } from '../services/llmService';
@@ -10,6 +12,14 @@ import { getAIResponse, getAIResponseWithSave } from '../services/llmService';
 interface JournalPageProps {
   onProfileClick: () => void;
 }
+
+// The response modal's title answers the help the user asked for
+const RESPONSE_TITLES: Partial<Record<HelpType, string>> = {
+  acute_validation: 'We hear you',
+  acute_skills: 'Something to try',
+  chronic_validation: 'Walking with you',
+  chronic_education: 'What your entries show',
+};
 
 const JournalPage: React.FC<JournalPageProps> = ({
   onProfileClick 
@@ -62,7 +72,7 @@ const JournalPage: React.FC<JournalPageProps> = ({
             // Check if AI generation succeeded or failed
             if ('ai_response' in response) {
               // Success: Show AI response
-              setModalTitle('AI Response');
+              setModalTitle(RESPONSE_TITLES[helpType] ?? 'From your companion');
               setModalContent(response.ai_response);
               setModalType('response');
               setShowCopyButton(true); // Allow copying AI response
@@ -85,7 +95,7 @@ const JournalPage: React.FC<JournalPageProps> = ({
             console.log('AI response for anonymous user:', response);
 
             // Show AI response
-            setModalTitle('AI Response');
+            setModalTitle(RESPONSE_TITLES[helpType] ?? 'From your companion');
             setModalContent(response.ai_response);
             setModalType('response');
             setShowCopyButton(true);
@@ -137,9 +147,44 @@ const JournalPage: React.FC<JournalPageProps> = ({
     setShowModal(false);
   };
 
+  const helpCards = [
+    {
+      type: 'acute_validation' as HelpType,
+      icon: Ear,
+      chip: 'bg-sky-soft text-sky-deep',
+      title: 'Just Listen',
+      caption: 'I need someone to hear me',
+      show: true,
+    },
+    {
+      type: 'acute_skills' as HelpType,
+      icon: Sparkles,
+      chip: 'bg-sage-soft text-sage-deep',
+      title: 'Quick Help',
+      caption: 'I need coping techniques now',
+      show: true,
+    },
+    {
+      type: 'chronic_validation' as HelpType,
+      icon: Sprout,
+      chip: 'bg-lav-soft text-lav-deep',
+      title: 'Ongoing Support',
+      caption: 'Support for long-term issues',
+      show: isLoggedIn,
+    },
+    {
+      type: 'chronic_education' as HelpType,
+      icon: Waves,
+      chip: 'bg-dawn-soft text-dawn-deep',
+      title: 'Learn Patterns',
+      caption: 'Help me understand trends',
+      show: isLoggedIn,
+    },
+  ];
+
   return (
-    <div className="max-w-4xl mx-auto p-6">
-      <div className="grid justify-self-end items-center mb-8">
+    <div className="max-w-4xl mx-auto px-6 py-8">
+      <div className="mb-12">
         <Header
           onProfileClick={onProfileClick}
           onLoginClick={handleLoginClick}
@@ -156,94 +201,94 @@ const JournalPage: React.FC<JournalPageProps> = ({
         onAuthSuccess={handleAuthSuccess}
       />
 
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-left text-3xl font-light text-gray-800">
-          How are you feeling today?
-        </h1>
+      <div className="flex flex-wrap gap-4 justify-between items-end mb-8">
+        <div>
+          <h1 className="font-display font-light text-4xl text-ink">
+            How are you feeling <em className="text-dawn-deep">today</em>?
+          </h1>
+          <p className="mt-2 text-ink-soft">
+            This is your space. Take a breath, and write at your own pace.
+          </p>
+        </div>
         {isLoggedIn ? (
           <button
             onClick={() => handleSubmit('save_only')}
             disabled={!journalContent.trim() || isSubmitting}
-            className="px-8 py-3 bg-gray-100 cursor-pointer hover:bg-gray-200 text-gray-700 rounded-lg border-2 border-gray-300 hover:border-gray-400 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+            className="px-6 py-2.5 rounded-full bg-white/70 text-ink-soft hover:text-ink ring-1 ring-ink/10 hover:ring-ink/20 transition-all cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
           >
-            {isSubmitting ? 'Saving...' : 'Save Only (No Response)'}
+            {isSubmitting ? 'Saving…' : 'Save quietly'}
           </button>
-          ) : (
-            <button
-              onClick={handleShowSampleText}
-              className="px-8 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg border-2 border-gray-300 hover:border-gray-400 transition-all disabled:opacity-50 cursor-pointer"
-            >
-              Sample Text
-            </button>
-          )}
+        ) : (
+          <button
+            onClick={handleShowSampleText}
+            className="px-6 py-2.5 rounded-full bg-white/70 text-ink-soft hover:text-ink ring-1 ring-ink/10 hover:ring-ink/20 transition-all cursor-pointer"
+          >
+            Show me an example
+          </button>
+        )}
       </div>
 
       {/* Journal Entry Form */}
-      <div className="bg-white rounded-xl shadow-lg p-8 mb-6">
+      <div className="bg-card rounded-3xl shadow-soft ring-1 ring-ink/5 p-8 sm:p-10 mb-8">
         {/* Optional Title */}
         <input
           type="text"
-          placeholder="Entry title (optional)"
+          placeholder="A title, if one comes to mind…"
           value={journalTitle}
           onChange={(e) => setJournalTitle(e.target.value)}
-          className="w-full p-3 mb-4 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          className="w-full pb-3 mb-6 font-display text-2xl text-ink bg-transparent border-b border-ink/10 focus:border-dawn/50 focus:outline-none transition-colors placeholder:italic"
         />
-        
+
         {/* Main Text Area */}
         <textarea
-          placeholder="Start writing about your day, your thoughts, your feelings..."
+          placeholder="Start writing about your day, your thoughts, your feelings…"
           value={journalContent}
           onChange={(e) => setJournalContent(e.target.value)}
           rows={12}
-          className="w-full p-4 border border-gray-200 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-700 leading-relaxed"
+          className="w-full font-display text-lg text-ink leading-loose bg-transparent resize-none focus:outline-none placeholder:italic"
         />
       </div>
 
       {/* Action Buttons */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4 place-items-center">
-        <button
-          onClick={() => handleSubmit('acute_validation')}
-          disabled={!journalContent.trim() || isSubmitting}
-          className="p-4 bg-blue-50 hover:bg-blue-100 text-blue-700 rounded-lg border-2 border-blue-200 hover:border-blue-300 transition-all disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed"
-        >
-          <div className="font-medium mb-1">Just Listen</div>
-          <div className="text-sm opacity-75">I need someone to hear me</div>
-        </button>
-        
-        <button
-          onClick={() => handleSubmit('acute_skills')}
-          disabled={!journalContent.trim() || isSubmitting}
-          className="p-4 bg-green-50 hover:bg-green-100 text-green-700 rounded-lg border-2 border-green-200 hover:border-green-300 transition-all disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed"
-        >
-          <div className="font-medium mb-1">Quick Help</div>
-          <div className="text-sm opacity-75">I need coping techniques now</div>
-        </button>
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+        {helpCards.filter(card => card.show).map(({ type, icon: Icon, chip, title, caption }) => (
+          <button
+            key={type}
+            onClick={() => handleSubmit(type)}
+            disabled={!journalContent.trim() || isSubmitting}
+            className="p-5 text-left bg-card rounded-2xl ring-1 ring-ink/5 shadow-soft hover:shadow-lift hover:-translate-y-0.5 transition-all cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:hover:shadow-soft"
+          >
+            <div className={`w-9 h-9 mb-3 rounded-full flex items-center justify-center ${chip}`}>
+              <Icon size={18} strokeWidth={1.75} />
+            </div>
+            <div className="font-medium text-ink mb-0.5">{title}</div>
+            <div className="text-sm text-ink-soft leading-snug">{caption}</div>
+          </button>
+        ))}
+      </div>
 
-      {/* Save Only Button (for logged in users) */}
-      {isLoggedIn && (
-        // <div className="flex justify-center">
-        <>
-        <button
-          onClick={() => handleSubmit('chronic_validation')}
-          disabled={!journalContent.trim() || isSubmitting}
-          className="p-4 bg-purple-50 hover:bg-purple-100 text-purple-700 rounded-lg border-2 border-purple-200 hover:border-purple-300 transition-all disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed"
-        >
-          <div className="font-medium mb-1">Ongoing Support</div>
-          <div className="text-sm opacity-75">Support for long-term issues</div>
-        </button>
-        
-        <button
-          onClick={() => handleSubmit('chronic_education')}
-          disabled={!journalContent.trim() || isSubmitting}
-          className="p-4 bg-orange-50 hover:bg-orange-100 text-orange-700 rounded-lg border-2 border-orange-200 hover:border-orange-300 transition-all disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed"
-        >
-          <div className="font-medium mb-1">Learn Patterns</div>
-          <div className="text-sm opacity-75">Help me understand trends</div>
-        </button>
-        </>
+      {/* Writing overlay — dusk clouds while the reflection is composed */}
+      {isSubmitting && (
+        <div className="fade-in fixed inset-0 z-40 dusk-veil backdrop-blur-sm">
+          <Clouds variant="dusk" />
+          <div className="absolute inset-0 flex items-center justify-center p-4">
+            <div className="rise-in bg-card rounded-3xl shadow-lift px-10 py-9 flex flex-col items-center">
+              <div className="relative bg-mist rounded-2xl px-5 pt-6 pb-5 w-48">
+                <Feather
+                  size={22}
+                  strokeWidth={1.75}
+                  className="write-nib absolute -top-2.5 right-4 text-dawn-deep"
+                />
+                <span className="write-line" style={{ width: '100%' }} />
+                <span className="write-line mt-2.5" style={{ width: '84%', animationDelay: '0.45s' }} />
+                <span className="write-line mt-2.5" style={{ width: '62%', animationDelay: '0.9s' }} />
+              </div>
+              <span className="mt-5 text-ink-soft text-sm">Reflecting on your words…</span>
+            </div>
+          </div>
+        </div>
       )}
     </div>
-  </div>
   );
 };
 

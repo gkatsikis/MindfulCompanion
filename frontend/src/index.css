@@ -1,19 +1,190 @@
 @import "tailwindcss";
 
+/*
+ * Mindful Companion — "dawn sky" design system.
+ * Warm paper base, soft morning-sky tones, one warm peach accent.
+ * Tokens below become Tailwind utilities (bg-paper, text-ink, shadow-soft, …).
+ */
+@theme {
+  --font-display: "Fraunces", Georgia, "Times New Roman", serif;
+  --font-sans: "Nunito Sans", ui-sans-serif, system-ui, -apple-system, sans-serif;
+
+  /* surfaces */
+  --color-paper: #fbf8f2;      /* warm cream — page ground */
+  --color-card: #fffdf9;       /* card surface, a breath warmer than white */
+  --color-mist: #f3f0e9;       /* input wells */
+
+  /* text */
+  --color-ink: #46425c;        /* soft plum-slate, never pure black */
+  --color-ink-soft: #8d89a3;   /* secondary text */
+
+  /* dawn — the single warm accent (primary actions) */
+  --color-dawn: #dd8a72;
+  --color-dawn-deep: #c9755e;
+  --color-dawn-soft: #faeee7;
+
+  /* sky family — quiet cool accents */
+  --color-sky: #7c92bd;
+  --color-sky-deep: #5d76a8;
+  --color-sky-soft: #eaf0f7;
+
+  --color-lav: #9a8bc0;
+  --color-lav-deep: #7e6daa;
+  --color-lav-soft: #f1eef8;
+
+  --color-sage: #7d9d86;
+  --color-sage-deep: #628a6d;
+  --color-sage-soft: #ecf2ed;
+
+  /* dusk — modal backdrop world */
+  --color-dusk: #575377;
+
+  --shadow-soft: 0 6px 24px rgb(70 66 92 / 0.08);
+  --shadow-lift: 0 12px 36px rgb(70 66 92 / 0.14);
+}
+
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  background-color: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
+::selection {
+  background: var(--color-dawn-soft);
+  color: var(--color-dawn-deep);
+}
+
+::placeholder {
+  color: var(--color-ink-soft);
+  opacity: 0.75;
+}
+
+/* ---- clouds -------------------------------------------------------- */
+
+/* One element per cloud: stacked radial gradients give soft, edgeless mist */
+.cloud {
+  position: absolute;
+  pointer-events: none;
+  --cloud-color: rgb(255 255 255 / 0.9);
+  background:
+    radial-gradient(38% 55% at 22% 64%, var(--cloud-color), transparent),
+    radial-gradient(45% 68% at 44% 42%, var(--cloud-color), transparent),
+    radial-gradient(40% 60% at 66% 56%, var(--cloud-color), transparent),
+    radial-gradient(32% 48% at 84% 68%, var(--cloud-color), transparent),
+    radial-gradient(60% 42% at 50% 82%, var(--cloud-color), transparent);
+  filter: blur(10px);
+  animation: cloud-drift linear infinite;
+}
+
 @keyframes cloud-drift {
-  0% {
-    transform: translateX(-300px);
-  }
-  100% {
-    transform: translateX(calc(100vw + 300px));
+  from { transform: translateX(-640px); }
+  to   { transform: translateX(calc(100vw + 240px)); }
+}
+
+/* Twilight wash shared by the modal backdrop and the writing overlay */
+.dusk-veil {
+  background: linear-gradient(
+    165deg,
+    rgb(87 83 119 / 0.55) 0%,
+    rgb(122 106 138 / 0.5) 55%,
+    rgb(157 122 128 / 0.45) 100%
+  );
+}
+
+/* ---- writing loader ------------------------------------------------- */
+
+/* A journal line being written: grows from the left, rests, fades */
+.write-line {
+  display: block;
+  height: 7px;
+  border-radius: 9999px;
+  background: rgb(70 66 92 / 0.14);
+  transform-origin: left center;
+  animation: write-line 2.8s ease-in-out infinite;
+}
+
+@keyframes write-line {
+  0%        { transform: scaleX(0); opacity: 1; }
+  45%, 85%  { transform: scaleX(1); opacity: 1; }
+  100%      { transform: scaleX(1); opacity: 0; }
+}
+
+/* The pen, gently scribbling */
+.write-nib {
+  animation: write-nib 1.15s ease-in-out infinite;
+}
+
+@keyframes write-nib {
+  0%, 100% { transform: translate(0, 0) rotate(0deg); }
+  30%      { transform: translate(3px, 1px) rotate(-5deg); }
+  60%      { transform: translate(6px, -1px) rotate(4deg); }
+}
+
+/* ---- AI reflection prose -------------------------------------------- */
+
+/* Calm typographic defaults for markdown-rendered AI responses */
+.prose-calm {
+  color: var(--color-ink);
+  font-family: var(--font-display);
+  font-size: 1.075rem;
+  line-height: 1.75;
+}
+.prose-calm h1, .prose-calm h2, .prose-calm h3, .prose-calm h4 {
+  font-family: var(--font-display);
+  font-weight: 500;
+  margin: 1.4em 0 0.5em;
+}
+.prose-calm h1 { font-size: 1.45rem; }
+.prose-calm h2 { font-size: 1.3rem; }
+.prose-calm h3, .prose-calm h4 { font-size: 1.15rem; }
+.prose-calm h1:first-child, .prose-calm h2:first-child,
+.prose-calm h3:first-child, .prose-calm p:first-child { margin-top: 0; }
+.prose-calm p { margin: 0.8em 0; }
+.prose-calm ul, .prose-calm ol { margin: 0.8em 0; padding-left: 1.5em; }
+.prose-calm ul { list-style: disc; }
+.prose-calm ol { list-style: decimal; }
+.prose-calm li { margin: 0.35em 0; }
+.prose-calm li::marker { color: var(--color-dawn); }
+.prose-calm strong { font-weight: 600; }
+.prose-calm blockquote {
+  margin: 1em 0;
+  padding-left: 1em;
+  border-left: 2px solid var(--color-dawn);
+  color: var(--color-ink-soft);
+  font-style: italic;
+}
+.prose-calm hr {
+  border: none;
+  border-top: 1px solid rgb(70 66 92 / 0.12);
+  margin: 1.5em 0;
+}
+
+/* ---- gentle motion -------------------------------------------------- */
+
+@keyframes fade-rise {
+  from { opacity: 0; transform: translateY(14px) scale(0.985); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes breathe {
+  0%, 100% { opacity: 0.55; }
+  50%      { opacity: 1; }
+}
+
+.rise-in  { animation: fade-rise 0.4s cubic-bezier(0.22, 1, 0.36, 1) both; }
+.fade-in  { animation: fade-in 0.35s ease-out both; }
+.breathe  { animation: breathe 2.6s ease-in-out infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  .cloud, .rise-in, .fade-in, .breathe, .write-line, .write-nib {
+    animation: none;
   }
 }

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Mail, Lock, User, Eye, EyeOff } from 'lucide-react';
+import { Mail, Lock, User as UserIcon, Eye, EyeOff } from 'lucide-react';
 import { login, register, loginWithGoogle } from '../services/authService';
 
 interface User {
@@ -104,7 +104,7 @@ const AuthForm: React.FC<AuthFormProps> = ({ onAuthSuccess, onClose }) => {
       <button
         onClick={handleGoogleLogin}
         disabled={authLoading}
-        className="w-full mb-4 flex items-center cursor-pointer justify-center gap-3 px-4 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50"
+        className="w-full mb-4 flex items-center cursor-pointer justify-center gap-3 px-4 py-3 bg-white ring-1 ring-ink/10 rounded-full hover:bg-mist hover:ring-ink/20 transition-all disabled:opacity-50 text-ink"
       >
         <svg className="w-5 h-5" viewBox="0 0 24 24">
           <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
@@ -117,14 +117,14 @@ const AuthForm: React.FC<AuthFormProps> = ({ onAuthSuccess, onClose }) => {
 
       {/* Divider */}
       <div className="flex items-center mb-4">
-        <hr className="flex-1 border-gray-300" />
-        <span className="px-3 text-gray-500 text-sm">or</span>
-        <hr className="flex-1 border-gray-300" />
+        <hr className="flex-1 border-ink/10" />
+        <span className="px-3 text-ink-soft text-sm italic">or</span>
+        <hr className="flex-1 border-ink/10" />
       </div>
 
       {/* Error Message */}
       {authError && (
-        <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
+        <div className="mb-4 p-3 bg-rose-50 border border-rose-100 rounded-xl text-rose-800 text-sm">
           {authError}
         </div>
       )}
@@ -135,23 +135,23 @@ const AuthForm: React.FC<AuthFormProps> = ({ onAuthSuccess, onClose }) => {
         {authMode === 'register' && (
           <div className="grid grid-cols-2 gap-3">
             <div className="relative">
-              <User className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
+              <UserIcon className="absolute left-3.5 top-3.5 h-5 w-5 text-ink-soft" />
               <input
                 type="text"
                 placeholder="First name"
                 value={firstName}
                 onChange={(e) => setFirstName(e.target.value)}
-                className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full pl-11 pr-4 py-3 bg-mist rounded-xl border border-transparent focus:bg-white focus:border-sky/40 focus:outline-none focus:ring-2 focus:ring-sky/25 transition-colors"
               />
             </div>
             <div className="relative">
-              <User className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
+              <UserIcon className="absolute left-3.5 top-3.5 h-5 w-5 text-ink-soft" />
               <input
                 type="text"
                 placeholder="Last name"
                 value={lastName}
                 onChange={(e) => setLastName(e.target.value)}
-                className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full pl-11 pr-4 py-3 bg-mist rounded-xl border border-transparent focus:bg-white focus:border-sky/40 focus:outline-none focus:ring-2 focus:ring-sky/25 transition-colors"
               />
             </div>
           </div>
@@ -159,32 +159,32 @@ const AuthForm: React.FC<AuthFormProps> = ({ onAuthSuccess, onClose }) => {
 
         {/* Email Field */}
         <div className="relative">
-          <Mail className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
+          <Mail className="absolute left-3.5 top-3.5 h-5 w-5 text-ink-soft" />
           <input
             type="email"
             placeholder="Email address"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
-            className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full pl-11 pr-4 py-3 bg-mist rounded-xl border border-transparent focus:bg-white focus:border-sky/40 focus:outline-none focus:ring-2 focus:ring-sky/25 transition-colors"
           />
         </div>
 
         {/* Password Field */}
         <div className="relative">
-          <Lock className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
+          <Lock className="absolute left-3.5 top-3.5 h-5 w-5 text-ink-soft" />
           <input
             type={showPassword ? 'text' : 'password'}
             placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
-            className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full pl-11 pr-12 py-3 bg-mist rounded-xl border border-transparent focus:bg-white focus:border-sky/40 focus:outline-none focus:ring-2 focus:ring-sky/25 transition-colors"
           />
           <button
             type="button"
             onClick={() => setShowPassword(!showPassword)}
-            className="absolute right-3 top-3 text-gray-400 hover:text-gray-600"
+            className="absolute right-3.5 top-3.5 text-ink-soft hover:text-ink cursor-pointer"
           >
             {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
           </button>
@@ -193,19 +193,19 @@ const AuthForm: React.FC<AuthFormProps> = ({ onAuthSuccess, onClose }) => {
         {/* Confirm Password Field for Registration */}
         {authMode === 'register' && (
           <div className="relative">
-            <Lock className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
+            <Lock className="absolute left-3.5 top-3.5 h-5 w-5 text-ink-soft" />
             <input
               type={showConfirmPassword ? 'text' : 'password'}
               placeholder="Confirm password"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               required
-              className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full pl-11 pr-12 py-3 bg-mist rounded-xl border border-transparent focus:bg-white focus:border-sky/40 focus:outline-none focus:ring-2 focus:ring-sky/25 transition-colors"
             />
             <button
               type="button"
               onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-              className="absolute right-3 top-3 text-gray-400 hover:text-gray-600"
+              className="absolute right-3.5 top-3.5 text-ink-soft hover:text-ink cursor-pointer"
             >
               {showConfirmPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
             </button>
@@ -216,7 +216,7 @@ const AuthForm: React.FC<AuthFormProps> = ({ onAuthSuccess, onClose }) => {
         <button
           type="submit"
           disabled={authLoading}
-          className="w-full cursor-pointer py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors disabled:opacity-50 font-medium"
+          className="w-full cursor-pointer py-3 bg-dawn hover:bg-dawn-deep text-white rounded-full transition-all shadow-soft hover:shadow-lift disabled:opacity-50 font-medium"
         >
           {authLoading ? (
             authMode === 'login' ? 'Signing in...' : 'Creating account...'
@@ -228,12 +228,12 @@ const AuthForm: React.FC<AuthFormProps> = ({ onAuthSuccess, onClose }) => {
 
       {/* Toggle Mode */}
       <div className="mt-6 text-center">
-        <span className="text-gray-600">
+        <span className="text-ink-soft">
           {authMode === 'login' ? "Don't have an account? " : "Already have an account? "}
         </span>
         <button
           onClick={toggleAuthMode}
-          className="text-blue-600 cursor-pointer hover:text-blue-700 font-medium"
+          className="text-sky-deep cursor-pointer hover:text-ink font-medium"
         >
           {authMode === 'login' ? 'Sign up' : 'Sign in'}
         </button>

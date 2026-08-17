@@ -22,6 +22,9 @@ load_dotenv()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# Built React app, copied in by the root Dockerfile; absent in local dev
+FRONTEND_DIST = BASE_DIR / 'frontend_dist'
+
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
@@ -70,6 +73,7 @@ AUTH_USER_MODEL = 'api.User'
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -87,7 +91,7 @@ ACCOUNT_LOGIN_METHODS = {'email'}
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [FRONTEND_DIST],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -115,8 +119,9 @@ else:
     DATABASE_URL = os.getenv('DATABASE_URL')
 
     if DATABASE_URL:
+        # conn_health_checks: Neon suspends idle computes; ping before reusing a pooled conn
         DATABASES = {
-            'default': dj_database_url.config(default=DATABASE_URL, conn_max_age=600)
+            'default': dj_database_url.config(default=DATABASE_URL, conn_max_age=600, conn_health_checks=True)
             }
     else:
         DATABASES = {
@@ -175,13 +180,15 @@ CORS_ALLOWED_ORIGINS = [
     'http://127.0.0.1:5173',
     'http://localhost:3000',
     'http://127.0.0.1:3000',
+    'http://localhost:3001',
+    'http://127.0.0.1:3001',
     FRONTEND_URL,
 ]
 
 SESSION_COOKIE_SAMESITE = 'Lax'
 CSRF_COOKIE_SAMESITE = 'Lax'
-SESSION_COOKIE_SECURE = False  # keep false for dev env only
-CSRF_COOKIE_SECURE = False
+SESSION_COOKIE_SECURE = not DEBUG
+CSRF_COOKIE_SECURE = not DEBUG
 
 
 CSRF_TRUSTED_ORIGINS = [
@@ -189,9 +196,16 @@ CSRF_TRUSTED_ORIGINS = [
     'http://127.0.0.1:5173',
     'http://localhost:3000',
     'http://127.0.0.1:3000',
+    'http://localhost:3001',
+    'http://127.0.0.1:3001',
     'http://localhost:8000',
     'http://127.0.0.1:8000',
+    'http://localhost:8001',
+    'http://127.0.0.1:8001',
 ]
+
+if FRONTEND_URL.startswith('http'):
+    CSRF_TRUSTED_ORIGINS.append(FRONTEND_URL)
 
 
 REST_FRAMEWORK = {
@@ -226,6 +240,14 @@ STATIC_URL = 'static/'
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_DIRS = []
+
+# WhiteNoise serves the built SPA (index.html assets) from the URL root,
+# and Django's own static files (admin) from /static/ with compression
+WHITENOISE_ROOT = FRONTEND_DIST
+STORAGES = {
+    'default': {'BACKEND': 'django.core.files.storage.FileSystemStorage'},
+    'staticfiles': {'BACKEND': 'whitenoise.storage.CompressedStaticFilesStorage'},
+}
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field

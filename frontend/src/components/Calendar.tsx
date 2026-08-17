@@ -53,28 +53,32 @@ const Calendar: React.FC<CalendarProps> = ({
     calendarDays.push(day);
   }
 
+  const today = new Date();
+  const isCurrentMonth =
+    today.getFullYear() === year && today.getMonth() === month;
+
   return (
-    <div className="bg-white rounded-xl shadow-lg p-6">
+    <div className="bg-card rounded-3xl shadow-soft ring-1 ring-ink/5 p-6 sm:p-8">
       {/* Calendar Header with Navigation */}
       <div className="flex items-center justify-between mb-6">
         <button
           onClick={() => onMonthChange('prev')}
-          className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+          className="p-2.5 rounded-full text-ink-soft hover:text-ink hover:bg-mist transition-all cursor-pointer"
           aria-label="Previous month"
         >
-          <ChevronLeft size={24} className="text-gray-600" />
+          <ChevronLeft size={22} strokeWidth={1.75} />
         </button>
 
-        <h2 className="text-2xl font-light text-gray-800">
-          {monthNames[month]} {year}
+        <h2 className="font-display text-2xl font-light text-ink">
+          {monthNames[month]} <span className="text-ink-soft">{year}</span>
         </h2>
 
         <button
           onClick={() => onMonthChange('next')}
-          className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+          className="p-2.5 rounded-full text-ink-soft hover:text-ink hover:bg-mist transition-all cursor-pointer"
           aria-label="Next month"
         >
-          <ChevronRight size={24} className="text-gray-600" />
+          <ChevronRight size={22} strokeWidth={1.75} />
         </button>
       </div>
 
@@ -83,7 +87,7 @@ const Calendar: React.FC<CalendarProps> = ({
         {dayNames.map(day => (
           <div
             key={day}
-            className="text-center text-sm font-medium text-gray-500 py-2"
+            className="text-center text-xs uppercase tracking-widest text-ink-soft py-2"
           >
             {day}
           </div>
@@ -100,30 +104,32 @@ const Calendar: React.FC<CalendarProps> = ({
 
           const entry = entriesByDay.get(day);
           const hasEntry = !!entry;
+          const isToday = isCurrentMonth && day === today.getDate();
 
           return (
             <div
               key={day}
               className={`
-                aspect-square border rounded-lg p-2 transition-all
-                ${hasEntry 
-                  ? 'border-blue-200 bg-blue-50 hover:bg-blue-100 cursor-pointer hover:shadow-md' 
-                  : 'border-gray-200 bg-gray-50'
+                aspect-square rounded-2xl p-2 transition-all
+                ${hasEntry
+                  ? 'bg-sky-soft ring-1 ring-sky/20 hover:ring-sky/40 cursor-pointer hover:shadow-soft hover:-translate-y-0.5'
+                  : 'bg-ink/[0.025]'
                 }
+                ${isToday ? 'ring-1 ring-dawn/50' : ''}
               `}
               onClick={() => entry && onEntryClick(entry)}
             >
               {/* Day Number */}
-              <div className={`
-                text-sm font-medium mb-1
-                ${hasEntry ? 'text-blue-700' : 'text-gray-400'}
-              `}>
-                {day}
+              <div className="flex items-center gap-1 mb-1">
+                <span className={`text-sm ${hasEntry ? 'font-medium text-sky-deep' : isToday ? 'font-medium text-dawn-deep' : 'text-ink-soft/70'}`}>
+                  {day}
+                </span>
+                {hasEntry && <span className="w-1.5 h-1.5 rounded-full bg-dawn" />}
               </div>
 
               {/* Entry Preview */}
               {hasEntry && entry && (
-                <div className="text-xs text-gray-600 line-clamp-3 overflow-hidden">
+                <div className="text-xs text-ink-soft line-clamp-3 overflow-hidden leading-snug">
                   {entry.content_preview}
                 </div>
               )}

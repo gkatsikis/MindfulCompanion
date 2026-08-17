@@ -78,7 +78,7 @@ ANTHROPIC_API_KEY=your-anthropic-api-key
 AI_MODEL=anthropic/claude-sonnet-4-5-20250929
 
 # Frontend URL (for CORS)
-FRONTEND_URL=http://localhost:3000
+FRONTEND_URL=http://localhost:3001
 
 # Google OAuth (optional)
 GOOGLE_CLIENT_ID=your-google-client-id
@@ -92,8 +92,37 @@ docker-compose up --build
 ```
 
 The application will be available at:
-- Frontend: http://localhost:3000
-- Backend API: http://localhost:8000
+- Frontend: http://localhost:3001
+- Backend API: http://localhost:8001
+
+### Deploying to GCP (Cloud Run + Neon)
+
+The root `Dockerfile` builds the React app and serves it and the API from one
+Cloud Run service (same origin), with Postgres on [Neon](https://neon.tech)'s free tier.
+
+1. Create a Neon project and copy its connection string.
+2. Deploy from the repo root:
+
+   ```bash
+   gcloud run deploy mindfulcompanion --source . --region us-central1 \
+     --allow-unauthenticated \
+     --set-env-vars "DEBUG=False,ALLOWED_HOSTS=.run.app,FRONTEND_URL=placeholder" \
+     --set-env-vars "SECRET_KEY=<random-50-chars>,ANTHROPIC_API_KEY=<key>" \
+     --set-env-vars "AI_MODEL=anthropic/claude-sonnet-4-5-20250929" \
+     --set-env-vars "DATABASE_URL=<neon-url>?sslmode=require" \
+     --set-env-vars "GOOGLE_CLIENT_ID=<id>,GOOGLE_CLIENT_SECRET=<secret>"
+   ```
+
+3. The first deploy prints the service URL. Point `FRONTEND_URL` at it (it drives
+   CSRF trust and OAuth redirects):
+
+   ```bash
+   gcloud run services update mindfulcompanion --region us-central1 \
+     --update-env-vars "FRONTEND_URL=https://<service-host>"
+   ```
+
+4. Google OAuth: add `https://<service-host>/accounts/google/login/callback/` to the
+   OAuth client's authorized redirect URIs in Google Cloud Console.
 
 ### Local Development
 
