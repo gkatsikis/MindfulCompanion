@@ -124,6 +124,17 @@ Cloud Run service (same origin), with Postgres on [Neon](https://neon.tech)'s fr
 4. Google OAuth: add `https://<service-host>/accounts/google/login/callback/` to the
    OAuth client's authorized redirect URIs in Google Cloud Console.
 
+#### Redeploying (every subsequent deploy)
+
+There is no CI/CD — pushing to GitHub deploys nothing. To ship local changes:
+
+```bash
+gcloud run deploy mindfulcompanion --source . --region us-east4 \
+  --project mindfulcompanion-prod --account geo.bjj.kat@gmail.com
+```
+
+Env vars persist on the service between deploys; only pass `--update-env-vars` to change one.
+
 ### Local Development
 
 **Backend:**
