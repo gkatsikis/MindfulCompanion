@@ -28,5 +28,6 @@ jobs:
 
       - name: Deploy
         run: |
+          gcloud auth login --brief --cred-file="$GOOGLE_GHA_CREDS_PATH"
           gcloud run deploy mindfulcompanion --source . \
             --region us-east4 --project mindfulcompanion-prod --quiet
