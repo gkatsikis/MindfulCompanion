@@ -43,6 +43,12 @@ const AppContent: React.FC = () => {
           }
         />
       </Routes>
+      <footer className="text-center py-4 text-xs text-slate-400">
+        Built by{' '}
+        <a href="https://gkats.dev" rel="noopener" className="underline hover:text-slate-600">
+          Cabro Insight LLC
+        </a>
+      </footer>
     </div>
   );
 };
