@@ -182,8 +182,10 @@ CORS_ALLOWED_ORIGINS = [
     'http://127.0.0.1:3000',
     'http://localhost:3001',
     'http://127.0.0.1:3001',
-    FRONTEND_URL,
 ]
+
+if FRONTEND_URL.startswith('http'):
+    CORS_ALLOWED_ORIGINS.append(FRONTEND_URL)
 
 SESSION_COOKIE_SAMESITE = 'Lax'
 CSRF_COOKIE_SAMESITE = 'Lax'

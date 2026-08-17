@@ -1,0 +1,11 @@
+.git
+certs
+**/node_modules
+**/venv
+**/htmlcov
+**/.pytest_cache
+**/__pycache__
+**/db.sqlite3
+**/.env
+**/.coverage
+frontend/dist
