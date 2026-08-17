@@ -56,8 +56,8 @@ class LLMService:
                     {"role": "user", "content": user_message}
                 ],
                 api_key=self.api_key,
-                temperature=0.7,  # Balanced creativity vs consistency
-                max_tokens=1000   # Reasonable response length
+                # No sampling params: Sonnet 5+ rejects non-default temperature/top_p
+                max_tokens=2048   # Shared budget for adaptive thinking + response text
             )
             
             # Extract response details
@@ -223,7 +223,7 @@ IMPORTANT: This is an assessment for self-reflection, not a clinical diagnosis. 
         """
         Calculate estimated API cost based on token usage.
         
-        Currently set for Anthropic Sonnet 4.5
+        Currently set for Anthropic Sonnet 5 ($3/$15 per MTok list price)
         """
         
         input_cost_per_million = 3.00   # $3 per million input tokens
