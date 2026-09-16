@@ -72,6 +72,7 @@ AUTH_USER_MODEL = 'api.User'
 
 MIDDLEWARE = [
     'mindfulcompanion.middleware.WwwRedirectMiddleware',
+    'mindfulcompanion.middleware.RobotsTagMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',

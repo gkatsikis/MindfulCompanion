@@ -113,6 +113,14 @@ Cloud Run service (same origin), with Postgres on [Neon](https://neon.tech)'s fr
      --set-env-vars "GOOGLE_CLIENT_ID=<id>,GOOGLE_CLIENT_SECRET=<secret>"
    ```
 
+   Once the custom domain is live, `ALLOWED_HOSTS` must list **both** the apex
+   and the www host — `WwwRedirectMiddleware` calls `get_host()`, which returns
+   HTTP 400 before the 301 can fire if the www host is missing:
+
+   ```
+   ALLOWED_HOSTS=.run.app,mindful-companion.com,www.mindful-companion.com
+   ```
+
 3. The first deploy prints the service URL. Point `FRONTEND_URL` at it (it drives
    CSRF trust and OAuth redirects):
 
@@ -192,6 +200,24 @@ MindfulCompanion/
 - `GET /accounts/google/login/` - Google OAuth
 - `POST /api/logout/` - Logout
 - `GET /api/user/` - Current user info
+
+## SEO
+
+Crawl/meta assets live in `frontend/public/` and are copied to `dist/` by the
+build, then served at the domain root by WhiteNoise (`WHITENOISE_ROOT = FRONTEND_DIST`):
+
+- `robots.txt` — allows `/`, disallows `/profile`, points at the sitemap.
+- `sitemap.xml` — the single canonical URL, `https://mindful-companion.com/`.
+- `og-image.png` — 1200x630 social card.
+
+Meta tags (canonical, description, Open Graph, Twitter Card, JSON-LD) are in
+`frontend/index.html`. The app is a single-page React app, so **every route
+shares that one head** — `RobotsTagMiddleware` sends `X-Robots-Tag: noindex,
+follow` on every path outside `INDEXABLE_PATHS` so redundant SPA routes never
+compete with the homepage. Add a path to `INDEXABLE_PATHS` only once it has its
+own canonical tag.
+
+After changing the canonical URL, resubmit the sitemap in Google Search Console.
 
 ## License
 
