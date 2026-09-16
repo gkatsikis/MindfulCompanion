@@ -24,22 +24,22 @@
   /* dawn — the single warm accent */
   --color-dawn: #dd8a72;         /* accents, markers, large display text only */
   --color-dawn-deep: #c9755e;
-  --color-dawn-soft: #faeee7;
+  --color-dawn-soft: #f8e6dc;
   --color-dawn-strong: #b05a45;  /* primary button fill — 4.8:1 with white text */
   --color-dawn-stronger: #9d4d3a;
 
   /* sky family — quiet cool accents */
   --color-sky: #7c92bd;
   --color-sky-deep: #5d76a8;
-  --color-sky-soft: #eaf0f7;
+  --color-sky-soft: #e1e9f5;
 
   --color-lav: #9a8bc0;
   --color-lav-deep: #7e6daa;
-  --color-lav-soft: #f1eef8;
+  --color-lav-soft: #eae5f5;
 
   --color-sage: #7d9d86;
   --color-sage-deep: #628a6d;
-  --color-sage-soft: #ecf2ed;
+  --color-sage-soft: #e3ede5;
 
   /* alert — destructive actions and errors */
   --color-alert: #a94a40;        /* text on alert-soft and fill under alert-fg */

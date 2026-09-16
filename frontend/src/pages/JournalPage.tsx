@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Markdown from 'react-markdown';
 import {
-  Ear, Sparkles, Sprout, Waves, Feather, Lock, Copy, Check, PenLine, HeartHandshake,
+  Ear, Sparkles, Sprout, Waves, Feather, Lock, Copy, Check, HeartHandshake,
 } from 'lucide-react';
 import type { HelpType } from '../types';
 import type { User } from '../contexts/authContext';
@@ -236,12 +236,6 @@ const JournalPage: React.FC = () => {
             support you'd like and a reflection will follow.
           </p>
         </div>
-        {!hasText && (
-          <button onClick={useExample} className={secondaryButton}>
-            <PenLine size={16} strokeWidth={1.75} />
-            Try an example
-          </button>
-        )}
       </div>
 
       {/* Writing surface: focus shows on the card, not as a ring inside it */}
@@ -253,7 +247,7 @@ const JournalPage: React.FC = () => {
           placeholder="A title, if one comes to mind…"
           value={draft.title}
           onChange={(e) => setTitle(e.target.value)}
-          className="writing-field w-full pb-3 mb-6 font-display text-2xl text-ink bg-transparent border-b border-ink/10 focus:border-dawn/50 transition-colors placeholder:italic"
+          className="writing-field w-full pb-3 mb-6 font-display text-xl sm:text-2xl text-ink bg-transparent border-b border-ink/10 focus:border-dawn/50 transition-colors placeholder:italic"
         />
         <label htmlFor="entry-body" className="sr-only">Journal entry</label>
         <textarea
@@ -262,16 +256,29 @@ const JournalPage: React.FC = () => {
           placeholder="Start writing about your day, your thoughts, your feelings…"
           value={draft.content}
           onChange={(e) => setContent(e.target.value)}
-          className="writing-field w-full min-h-40 sm:min-h-56 field-sizing-content font-display text-lg text-ink leading-loose bg-transparent resize-none placeholder:italic"
+          className="writing-field w-full min-h-40 field-sizing-content font-display text-lg text-ink leading-loose bg-transparent resize-none placeholder:italic"
         />
-        <div className="mt-4 flex flex-wrap items-center justify-between gap-3 min-h-10">
-          <span className="text-sm text-ink-soft">{hasText && 'Draft kept on this device'}</span>
-          {isLoggedIn && (
-            <button onClick={saveQuietly} disabled={!hasText || isSaving || isSubmitting} className={secondaryButton}>
-              {isSaving ? 'Saving…' : 'Save quietly'}
+        {(hasText || isLoggedIn) && (
+          <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
+            <span className="text-sm text-ink-soft">{hasText && 'Draft kept on this device'}</span>
+            {isLoggedIn && (
+              <button onClick={saveQuietly} disabled={!hasText || isSaving || isSubmitting} className={secondaryButton}>
+                {isSaving ? 'Saving…' : 'Save quietly'}
+              </button>
+            )}
+          </div>
+        )}
+        {!hasText && (
+          <p className="mt-4 text-sm text-ink-soft">
+            Not sure where to start?{' '}
+            <button
+              onClick={useExample}
+              className="underline decoration-ink/30 hover:decoration-ink hover:text-ink transition-colors cursor-pointer"
+            >
+              Try an example
             </button>
-          )}
-        </div>
+          </p>
+        )}
       </div>
 
       {error && (
@@ -331,7 +338,7 @@ const JournalPage: React.FC = () => {
 
       <section aria-labelledby="help-title" className="mb-4">
         <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1 mb-4">
-          <h2 id="help-title" className="font-display text-xl text-ink">
+          <h2 id="help-title" className="font-display font-light text-2xl text-ink">
             {reflection ? 'Ask in a different way' : "When you're ready — what would help?"}
           </h2>
           <p role="status" aria-live="polite" className="text-sm text-dawn-strong min-h-5">
@@ -350,12 +357,17 @@ const JournalPage: React.FC = () => {
                 aria-disabled={!hasText && !locked}
                 className={`p-5 flex flex-col items-start text-left rounded-2xl transition-all cursor-pointer disabled:cursor-wait ${
                   locked
-                    ? 'bg-card/50 border border-dashed border-ink/15 hover:border-ink/30'
+                    ? 'bg-card/70 ring-1 ring-ink/5 opacity-80 hover:opacity-100 hover:shadow-soft'
                     : 'bg-card ring-1 ring-ink/5 shadow-soft hover:shadow-lift hover:-translate-y-0.5'
                 }`}
               >
-                <div className={`w-9 h-9 mb-3 rounded-full flex items-center justify-center ${locked ? 'bg-mist text-ink-soft' : chip}`}>
-                  {locked ? <Lock size={16} strokeWidth={1.75} /> : <Icon size={18} strokeWidth={1.75} />}
+                <div className={`relative w-9 h-9 mb-3 rounded-full flex items-center justify-center ${locked ? 'bg-mist text-ink-soft' : chip}`}>
+                  <Icon size={18} strokeWidth={2} />
+                  {locked && (
+                    <span className="absolute -right-1 -bottom-1 w-4.5 h-4.5 rounded-full bg-ink text-paper flex items-center justify-center ring-2 ring-card">
+                      <Lock size={9} strokeWidth={2.5} />
+                    </span>
+                  )}
                 </div>
                 <div className="font-medium text-ink mb-0.5">{title}</div>
                 <div className="text-sm text-ink-soft leading-snug">
