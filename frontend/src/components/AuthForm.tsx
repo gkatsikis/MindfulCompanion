@@ -1,14 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Mail, Lock, User as UserIcon, Eye, EyeOff } from 'lucide-react';
 import { login, register, loginWithGoogle } from '../services/authService';
-
-interface User {
-  id: number;
-  email: string;
-  first_name: string;
-  last_name: string;
-  date_joined: string;
-}
+import type { User } from '../contexts/authContext';
 
 interface AuthFormProps {
   onAuthSuccess: (user: User) => void;
@@ -72,8 +65,8 @@ const AuthForm: React.FC<AuthFormProps> = ({ onAuthSuccess, onClose }) => {
       }
 
       onClose();
-    } catch (error: any) {
-      setAuthError(error.message || 'Authentication failed. Please try again.');
+    } catch (error: unknown) {
+      setAuthError(error instanceof Error ? error.message : 'Authentication failed. Please try again.');
     } finally {
       setAuthLoading(false);
     }
@@ -86,8 +79,8 @@ const AuthForm: React.FC<AuthFormProps> = ({ onAuthSuccess, onClose }) => {
     try {
       await loginWithGoogle();
 
-    } catch (error: any) {
-      setAuthError(error.message || 'Google login failed. Please try again.');
+    } catch (error: unknown) {
+      setAuthError(error instanceof Error ? error.message : 'Google login failed. Please try again.');
     } finally {
       setAuthLoading(false);
     }
@@ -104,7 +97,7 @@ const AuthForm: React.FC<AuthFormProps> = ({ onAuthSuccess, onClose }) => {
       <button
         onClick={handleGoogleLogin}
         disabled={authLoading}
-        className="w-full mb-4 flex items-center cursor-pointer justify-center gap-3 px-4 py-3 bg-white ring-1 ring-ink/10 rounded-full hover:bg-mist hover:ring-ink/20 transition-all disabled:opacity-50 text-ink"
+        className="w-full mb-4 flex items-center cursor-pointer justify-center gap-3 px-4 py-3 bg-card ring-1 ring-ink/10 rounded-full hover:bg-mist hover:ring-ink/20 transition-all disabled:opacity-50 text-ink"
       >
         <svg className="w-5 h-5" viewBox="0 0 24 24">
           <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
@@ -124,7 +117,7 @@ const AuthForm: React.FC<AuthFormProps> = ({ onAuthSuccess, onClose }) => {
 
       {/* Error Message */}
       {authError && (
-        <div className="mb-4 p-3 bg-rose-50 border border-rose-100 rounded-xl text-rose-800 text-sm">
+        <div className="mb-4 p-3 bg-alert-soft ring-1 ring-alert/20 rounded-xl text-alert text-sm">
           {authError}
         </div>
       )}
@@ -141,7 +134,7 @@ const AuthForm: React.FC<AuthFormProps> = ({ onAuthSuccess, onClose }) => {
                 placeholder="First name"
                 value={firstName}
                 onChange={(e) => setFirstName(e.target.value)}
-                className="w-full pl-11 pr-4 py-3 bg-mist rounded-xl border border-transparent focus:bg-white focus:border-sky/40 focus:outline-none focus:ring-2 focus:ring-sky/25 transition-colors"
+                className="w-full pl-11 pr-4 py-3 bg-mist rounded-xl border border-transparent focus:bg-card focus:border-sky/40 focus:outline-none focus:ring-2 focus:ring-sky/25 transition-colors"
               />
             </div>
             <div className="relative">
@@ -151,7 +144,7 @@ const AuthForm: React.FC<AuthFormProps> = ({ onAuthSuccess, onClose }) => {
                 placeholder="Last name"
                 value={lastName}
                 onChange={(e) => setLastName(e.target.value)}
-                className="w-full pl-11 pr-4 py-3 bg-mist rounded-xl border border-transparent focus:bg-white focus:border-sky/40 focus:outline-none focus:ring-2 focus:ring-sky/25 transition-colors"
+                className="w-full pl-11 pr-4 py-3 bg-mist rounded-xl border border-transparent focus:bg-card focus:border-sky/40 focus:outline-none focus:ring-2 focus:ring-sky/25 transition-colors"
               />
             </div>
           </div>
@@ -166,7 +159,7 @@ const AuthForm: React.FC<AuthFormProps> = ({ onAuthSuccess, onClose }) => {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
-            className="w-full pl-11 pr-4 py-3 bg-mist rounded-xl border border-transparent focus:bg-white focus:border-sky/40 focus:outline-none focus:ring-2 focus:ring-sky/25 transition-colors"
+            className="w-full pl-11 pr-4 py-3 bg-mist rounded-xl border border-transparent focus:bg-card focus:border-sky/40 focus:outline-none focus:ring-2 focus:ring-sky/25 transition-colors"
           />
         </div>
 
@@ -179,11 +172,12 @@ const AuthForm: React.FC<AuthFormProps> = ({ onAuthSuccess, onClose }) => {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
-            className="w-full pl-11 pr-12 py-3 bg-mist rounded-xl border border-transparent focus:bg-white focus:border-sky/40 focus:outline-none focus:ring-2 focus:ring-sky/25 transition-colors"
+            className="w-full pl-11 pr-12 py-3 bg-mist rounded-xl border border-transparent focus:bg-card focus:border-sky/40 focus:outline-none focus:ring-2 focus:ring-sky/25 transition-colors"
           />
           <button
             type="button"
             onClick={() => setShowPassword(!showPassword)}
+            aria-label={showPassword ? 'Hide password' : 'Show password'}
             className="absolute right-3.5 top-3.5 text-ink-soft hover:text-ink cursor-pointer"
           >
             {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
@@ -200,11 +194,12 @@ const AuthForm: React.FC<AuthFormProps> = ({ onAuthSuccess, onClose }) => {
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               required
-              className="w-full pl-11 pr-12 py-3 bg-mist rounded-xl border border-transparent focus:bg-white focus:border-sky/40 focus:outline-none focus:ring-2 focus:ring-sky/25 transition-colors"
+              className="w-full pl-11 pr-12 py-3 bg-mist rounded-xl border border-transparent focus:bg-card focus:border-sky/40 focus:outline-none focus:ring-2 focus:ring-sky/25 transition-colors"
             />
             <button
               type="button"
               onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+              aria-label={showConfirmPassword ? 'Hide password confirmation' : 'Show password confirmation'}
               className="absolute right-3.5 top-3.5 text-ink-soft hover:text-ink cursor-pointer"
             >
               {showConfirmPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
@@ -216,7 +211,7 @@ const AuthForm: React.FC<AuthFormProps> = ({ onAuthSuccess, onClose }) => {
         <button
           type="submit"
           disabled={authLoading}
-          className="w-full cursor-pointer py-3 bg-dawn hover:bg-dawn-deep text-white rounded-full transition-all shadow-soft hover:shadow-lift disabled:opacity-50 font-medium"
+          className="w-full cursor-pointer py-3 bg-dawn-strong hover:bg-dawn-stronger text-white rounded-full transition-all shadow-soft hover:shadow-lift disabled:opacity-50 font-medium"
         >
           {authLoading ? (
             authMode === 'login' ? 'Signing in...' : 'Creating account...'

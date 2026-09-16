@@ -162,6 +162,17 @@ npm install
 npm run dev
 ```
 
+Frontend checks (Node 22.6+ — the tests run on Node's built-in runner with
+native TypeScript, no extra dependencies):
+```bash
+npm run build   # tsc + vite
+npm run lint
+npm test        # frontend/tests/*.test.ts — pure helpers in src/lib
+```
+
+The UI follows the OS colour scheme (`prefers-color-scheme`); there is no
+in-app theme toggle.
+
 ## Project Structure
 
 ```
@@ -206,7 +217,7 @@ MindfulCompanion/
 Crawl/meta assets live in `frontend/public/` and are copied to `dist/` by the
 build, then served at the domain root by WhiteNoise (`WHITENOISE_ROOT = FRONTEND_DIST`):
 
-- `robots.txt` — allows `/`, disallows `/profile`, points at the sitemap.
+- `robots.txt` — allows `/`, disallows `/journal` (signed-in history), points at the sitemap.
 - `sitemap.xml` — the single canonical URL, `https://mindful-companion.com/`.
 - `og-image.png` — 1200x630 social card.
 

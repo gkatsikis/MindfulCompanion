@@ -4,6 +4,9 @@
  * Mindful Companion — "dawn sky" design system.
  * Warm paper base, soft morning-sky tones, one warm peach accent.
  * Tokens below become Tailwind utilities (bg-paper, text-ink, shadow-soft, …).
+ *
+ * Contrast: every text token here clears WCAG AA (4.5:1) on the surface it is
+ * meant for. `dawn` is decorative only; text-bearing fills use `dawn-strong`.
  */
 @theme {
   --font-display: "Fraunces", Georgia, "Times New Roman", serif;
@@ -16,12 +19,14 @@
 
   /* text */
   --color-ink: #46425c;        /* soft plum-slate, never pure black */
-  --color-ink-soft: #8d89a3;   /* secondary text */
+  --color-ink-soft: #6f6b86;   /* secondary text — 4.8:1 on paper */
 
-  /* dawn — the single warm accent (primary actions) */
-  --color-dawn: #dd8a72;
+  /* dawn — the single warm accent */
+  --color-dawn: #dd8a72;         /* accents, markers, large display text only */
   --color-dawn-deep: #c9755e;
   --color-dawn-soft: #faeee7;
+  --color-dawn-strong: #b05a45;  /* primary button fill — 4.8:1 with white text */
+  --color-dawn-stronger: #9d4d3a;
 
   /* sky family — quiet cool accents */
   --color-sky: #7c92bd;
@@ -36,11 +41,44 @@
   --color-sage-deep: #628a6d;
   --color-sage-soft: #ecf2ed;
 
+  /* alert — destructive actions and errors */
+  --color-alert: #a94a40;        /* text on alert-soft and fill under alert-fg */
+  --color-alert-soft: #fbeceb;
+  --color-alert-fg: #ffffff;
+
   /* dusk — modal backdrop world */
   --color-dusk: #575377;
 
   --shadow-soft: 0 6px 24px rgb(70 66 92 / 0.08);
   --shadow-lift: 0 12px 36px rgb(70 66 92 / 0.14);
+}
+
+/* Night palette: same hues, inverted value. Cloud + sky washes flip below. */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-paper: #1b1a24;
+    --color-card: #23222e;
+    --color-mist: #2b2a37;
+
+    --color-ink: #e8e5f0;
+    --color-ink-soft: #a49fb8;   /* 6.7:1 on night paper */
+
+    --color-dawn-soft: #3a2a27;
+    --color-sky-soft: #232a3a;
+    --color-lav-soft: #2a2536;
+    --color-sage-soft: #232d27;
+
+    --color-sky-deep: #9fb2da;
+    --color-lav-deep: #b3a5d8;
+    --color-sage-deep: #9dbba5;
+
+    --color-alert: #f0a094;
+    --color-alert-soft: #3a2426;
+    --color-alert-fg: #1b1a24;
+
+    --shadow-soft: 0 6px 24px rgb(0 0 0 / 0.35);
+    --shadow-lift: 0 12px 36px rgb(0 0 0 / 0.5);
+  }
 }
 
 body {
@@ -54,15 +92,33 @@ body {
 
 ::selection {
   background: var(--color-dawn-soft);
-  color: var(--color-dawn-deep);
+  color: var(--color-ink);
 }
 
 ::placeholder {
   color: var(--color-ink-soft);
-  opacity: 0.75;
+  opacity: 1;
 }
 
-/* ---- clouds -------------------------------------------------------- */
+/* One focus treatment for every control; the writing surface opts out below
+   and shows focus on its card instead. */
+:focus-visible {
+  outline: 2px solid var(--color-sky);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+.writing-field:focus-visible {
+  outline: none;
+}
+
+/* ---- sky ----------------------------------------------------------- */
+
+.sky-wash {
+  background: linear-gradient(to bottom, #dfe8f4 0%, #eef0ef 34%, var(--color-paper) 62%);
+}
+.dawn-glow {
+  background: radial-gradient(52% 38% at 82% 0%, rgb(246 214 189 / 0.55), transparent);
+}
 
 /* One element per cloud: stacked radial gradients give soft, edgeless mist */
 .cloud {
@@ -77,6 +133,18 @@ body {
     radial-gradient(60% 42% at 50% 82%, var(--cloud-color), transparent);
   filter: blur(10px);
   animation: cloud-drift linear infinite;
+}
+
+@media (prefers-color-scheme: dark) {
+  .sky-wash {
+    background: linear-gradient(to bottom, #1f2338 0%, #1d1c2a 40%, var(--color-paper) 65%);
+  }
+  .dawn-glow {
+    background: radial-gradient(52% 38% at 82% 0%, rgb(221 138 114 / 0.14), transparent);
+  }
+  .cloud {
+    --cloud-color: rgb(140 150 190 / 0.16);
+  }
 }
 
 @keyframes cloud-drift {

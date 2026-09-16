@@ -47,22 +47,9 @@ const Clouds: React.FC<CloudsProps> = ({ variant = 'page' }) => {
     >
       {variant === 'page' && (
         <>
-          {/* morning sky fading into paper */}
-          <div
-            className="absolute inset-0"
-            style={{
-              background:
-                'linear-gradient(to bottom, #dfe8f4 0%, #eef0ef 34%, var(--color-paper) 62%)',
-            }}
-          />
-          {/* low warm glow, top right — dawn light */}
-          <div
-            className="absolute inset-0"
-            style={{
-              background:
-                'radial-gradient(52% 38% at 82% 0%, rgb(246 214 189 / 0.55), transparent)',
-            }}
-          />
+          {/* morning sky fading into paper, then a low warm glow top right; both flip in dark mode */}
+          <div className="absolute inset-0 sky-wash" />
+          <div className="absolute inset-0 dawn-glow" />
         </>
       )}
 

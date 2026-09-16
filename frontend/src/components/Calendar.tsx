@@ -1,6 +1,12 @@
 import React from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import type { JournalEntryListItem } from '../types';
+import {
+  groupEntriesByDay,
+  byCreatedDesc,
+  formatEntryTime,
+  formatEntryDateShort,
+} from '../lib/entries';
 
 interface CalendarProps {
   entries: JournalEntryListItem[];
@@ -9,133 +15,123 @@ interface CalendarProps {
   onEntryClick: (entry: JournalEntryListItem) => void;
 }
 
-const Calendar: React.FC<CalendarProps> = ({
-  entries,
-  currentDate,
-  onMonthChange,
-  onEntryClick,
-}) => {
-  // Get the first day of the month and total days in month
+const DAY_NAMES = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
+const navButton =
+  'p-2.5 rounded-full text-ink-soft hover:text-ink hover:bg-mist transition-all cursor-pointer';
+
+const Calendar: React.FC<CalendarProps> = ({ entries, currentDate, onMonthChange, onEntryClick }) => {
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth();
-  const firstDayOfMonth = new Date(year, month, 1);
-  const lastDayOfMonth = new Date(year, month + 1, 0);
-  const daysInMonth = lastDayOfMonth.getDate();
-  const startingDayOfWeek = firstDayOfMonth.getDay(); // 0 = Sunday
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const leadingBlanks = new Date(year, month, 1).getDay();
 
-  // Month names for display
-  const monthNames = [
-    'January', 'February', 'March', 'April', 'May', 'June',
-    'July', 'August', 'September', 'October', 'November', 'December'
-  ];
-
-  // Day names
-  const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-
-  // Create a map of entries by day for quick lookup
-  const entriesByDay = new Map<number, JournalEntryListItem>();
-  entries.forEach(entry => {
-    const entryDate = new Date(entry.created_at);
-    const day = entryDate.getDate();
-    entriesByDay.set(day, entry);
-  });
-
-  // Generate calendar grid
-  const calendarDays: (number | null)[] = [];
-  
-  // Add empty cells for days before month starts
-  for (let i = 0; i < startingDayOfWeek; i++) {
-    calendarDays.push(null);
-  }
-  
-  // Add all days of the month
-  for (let day = 1; day <= daysInMonth; day++) {
-    calendarDays.push(day);
-  }
+  const byDay = groupEntriesByDay(entries);
+  const recent = [...entries].sort(byCreatedDesc);
 
   const today = new Date();
-  const isCurrentMonth =
-    today.getFullYear() === year && today.getMonth() === month;
+  const isToday = (day: number) =>
+    today.getFullYear() === year && today.getMonth() === month && today.getDate() === day;
+
+  const cells: (number | null)[] = [
+    ...Array<null>(leadingBlanks).fill(null),
+    ...Array.from({ length: daysInMonth }, (_, i) => i + 1),
+  ];
 
   return (
-    <div className="bg-card rounded-3xl shadow-soft ring-1 ring-ink/5 p-6 sm:p-8">
-      {/* Calendar Header with Navigation */}
+    <div className="bg-card rounded-3xl shadow-soft ring-1 ring-ink/5 p-5 sm:p-8">
       <div className="flex items-center justify-between mb-6">
-        <button
-          onClick={() => onMonthChange('prev')}
-          className="p-2.5 rounded-full text-ink-soft hover:text-ink hover:bg-mist transition-all cursor-pointer"
-          aria-label="Previous month"
-        >
+        <button onClick={() => onMonthChange('prev')} className={navButton} aria-label="Previous month">
           <ChevronLeft size={22} strokeWidth={1.75} />
         </button>
-
         <h2 className="font-display text-2xl font-light text-ink">
-          {monthNames[month]} <span className="text-ink-soft">{year}</span>
+          {currentDate.toLocaleDateString(undefined, { month: 'long' })}{' '}
+          <span className="text-ink-soft">{year}</span>
         </h2>
-
-        <button
-          onClick={() => onMonthChange('next')}
-          className="p-2.5 rounded-full text-ink-soft hover:text-ink hover:bg-mist transition-all cursor-pointer"
-          aria-label="Next month"
-        >
+        <button onClick={() => onMonthChange('next')} className={navButton} aria-label="Next month">
           <ChevronRight size={22} strokeWidth={1.75} />
         </button>
       </div>
 
-      {/* Day Names Header */}
-      <div className="grid grid-cols-7 gap-2 mb-2">
-        {dayNames.map(day => (
-          <div
-            key={day}
-            className="text-center text-xs uppercase tracking-widest text-ink-soft py-2"
-          >
-            {day}
-          </div>
-        ))}
-      </div>
-
-      {/* Calendar Grid */}
-      <div className="grid grid-cols-7 gap-2">
-        {calendarDays.map((day, index) => {
-          if (day === null) {
-            // Empty cell before month starts
-            return <div key={`empty-${index}`} className="aspect-square" />;
-          }
-
-          const entry = entriesByDay.get(day);
-          const hasEntry = !!entry;
-          const isToday = isCurrentMonth && day === today.getDate();
-
-          return (
-            <div
-              key={day}
-              className={`
-                aspect-square rounded-2xl p-2 transition-all
-                ${hasEntry
-                  ? 'bg-sky-soft ring-1 ring-sky/20 hover:ring-sky/40 cursor-pointer hover:shadow-soft hover:-translate-y-0.5'
-                  : 'bg-ink/[0.025]'
-                }
-                ${isToday ? 'ring-1 ring-dawn/50' : ''}
-              `}
-              onClick={() => entry && onEntryClick(entry)}
+      {/* Phones: a list reads better than 45px squares */}
+      <ul className="sm:hidden divide-y divide-ink/5">
+        {recent.map((entry) => (
+          <li key={entry.id}>
+            <button
+              onClick={() => onEntryClick(entry)}
+              className="w-full text-left py-4 flex items-baseline gap-4 cursor-pointer rounded-xl"
             >
-              {/* Day Number */}
-              <div className="flex items-center gap-1 mb-1">
-                <span className={`text-sm ${hasEntry ? 'font-medium text-sky-deep' : isToday ? 'font-medium text-dawn-deep' : 'text-ink-soft/70'}`}>
-                  {day}
-                </span>
-                {hasEntry && <span className="w-1.5 h-1.5 rounded-full bg-dawn" />}
-              </div>
-
-              {/* Entry Preview */}
-              {hasEntry && entry && (
-                <div className="text-xs text-ink-soft line-clamp-3 overflow-hidden leading-snug">
+              <span className="shrink-0 w-16 text-sm text-ink-soft">
+                {formatEntryDateShort(entry.created_at)}
+              </span>
+              <span className="min-w-0">
+                {entry.title && <span className="block font-medium text-ink truncate">{entry.title}</span>}
+                <span className="block text-sm text-ink-soft line-clamp-2 leading-snug">
                   {entry.content_preview}
-                </div>
-              )}
+                </span>
+              </span>
+            </button>
+          </li>
+        ))}
+      </ul>
+
+      {/* Wider screens: the month grid */}
+      <div className="hidden sm:block">
+        <div className="grid grid-cols-7 gap-2 mb-2">
+          {DAY_NAMES.map((name) => (
+            <div key={name} className="text-center text-xs uppercase tracking-widest text-ink-soft py-2">
+              {name}
             </div>
-          );
-        })}
+          ))}
+        </div>
+
+        <div className="grid grid-cols-7 gap-2">
+          {cells.map((day, index) => {
+            if (day === null) return <div key={`blank-${index}`} />;
+
+            const dayEntries = byDay.get(day) ?? [];
+            const ring = isToday(day)
+              ? 'ring-1 ring-dawn/60'
+              : dayEntries.length
+                ? 'ring-1 ring-sky/20'
+                : '';
+            const surface = dayEntries.length ? 'bg-sky-soft' : 'bg-ink/[0.025]';
+
+            return (
+              <div key={day} className={`min-h-28 rounded-2xl p-2 ${surface} ${ring}`}>
+                <div
+                  className={`text-sm mb-1 ${
+                    dayEntries.length
+                      ? 'font-medium text-sky-deep'
+                      : isToday(day)
+                        ? 'font-medium text-dawn-strong'
+                        : 'text-ink-soft'
+                  }`}
+                >
+                  {day}
+                </div>
+                <div className="space-y-1">
+                  {dayEntries.map((entry) => (
+                    <button
+                      key={entry.id}
+                      onClick={() => onEntryClick(entry)}
+                      className="w-full text-left rounded-lg px-1.5 py-1 hover:bg-card/80 transition-colors cursor-pointer"
+                    >
+                      {dayEntries.length > 1 && (
+                        <span className="block text-[11px] text-sky-deep">
+                          {formatEntryTime(entry.created_at)}
+                        </span>
+                      )}
+                      <span className="block text-xs text-ink-soft leading-snug line-clamp-2">
+                        {entry.title || entry.content_preview}
+                      </span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            );
+          })}
+        </div>
       </div>
     </div>
   );
