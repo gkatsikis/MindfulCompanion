@@ -1,0 +1,54 @@
+/*
+ * Mindful Companion type — two variable families, both SIL Open Font License.
+ *
+ * Option A (self-hosted, offline, preferred for print/design tools): the four
+ * TTFs in this folder. Option B (what the app does today): the Google Fonts
+ * link at the bottom. Either way the CSS custom properties are the same.
+ */
+
+/* Fraunces — display serif. The "voice" of the brand: headings, the AI reflection, the wordmark. */
+@font-face {
+  font-family: "Fraunces";
+  src: url("./Fraunces[SOFT,WONK,opsz,wght].ttf") format("truetype");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Fraunces";
+  src: url("./Fraunces-Italic[SOFT,WONK,opsz,wght].ttf") format("truetype");
+  font-weight: 100 900;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* Nunito Sans — UI sans. Body copy, buttons, labels, forms. */
+@font-face {
+  font-family: "Nunito Sans";
+  src: url("./NunitoSans[YTLC,opsz,wdth,wght].ttf") format("truetype");
+  font-weight: 200 1000;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Nunito Sans";
+  src: url("./NunitoSans-Italic[YTLC,opsz,wdth,wght].ttf") format("truetype");
+  font-weight: 200 1000;
+  font-style: italic;
+  font-display: swap;
+}
+
+:root {
+  --font-display: "Fraunces", Georgia, "Times New Roman", serif;
+  --font-sans: "Nunito Sans", ui-sans-serif, system-ui, -apple-system, sans-serif;
+  /* Let Fraunces pick its optical size from the rendered size (browsers do this by default). */
+  font-optical-sizing: auto;
+}
+
+/*
+ * Option B — Google Fonts (same axes the app loads in frontend/index.html):
+ *
+ * <link rel="preconnect" href="https://fonts.googleapis.com">
+ * <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+ * <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..600;1,9..144,300..600&family=Nunito+Sans:ital,opsz,wght@0,6..12,300..700;1,6..12,300..700&display=swap" rel="stylesheet">
+ */

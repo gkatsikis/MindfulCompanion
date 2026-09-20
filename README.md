@@ -212,6 +212,14 @@ MindfulCompanion/
 - `POST /api/logout/` - Logout
 - `GET /api/user/` - Current user info
 
+## Branding
+
+The brand kit lives in [`branding-kit/`](branding-kit/): logo SVG/PNG masters,
+colour tokens (`colors/tokens.css`, mirrored by `frontend/src/index.css`), the
+two typefaces with their OFL licences, the social share image, and a guide
+(`branding-kit/README.md`, visual version in `brand-sheet.html`). Generated
+assets are rebuilt with `branding-kit/tools/build.py` (see the guide for setup).
+
 ## SEO
 
 Crawl/meta assets live in `frontend/public/` and are copied to `dist/` by the
@@ -219,7 +227,8 @@ build, then served at the domain root by WhiteNoise (`WHITENOISE_ROOT = FRONTEND
 
 - `robots.txt` — allows `/`, disallows `/journal` (signed-in history), points at the sitemap.
 - `sitemap.xml` — the single canonical URL, `https://mindful-companion.com/`.
-- `og-image.png` — 1200x630 social card.
+- `og-image.png` — 1200x630 social card (source: `branding-kit/social/`).
+- `favicon.ico`, `favicon.svg`, `apple-touch-icon.png` — the brand mark's small cut (source: `branding-kit/logo/`).
 
 Meta tags (canonical, description, Open Graph, Twitter Card, JSON-LD) are in
 `frontend/index.html`. The app is a single-page React app, so **every route

@@ -1,0 +1,317 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mindful Companion — Brand Sheet</title>
+<link rel="icon" href="logo/png/mark-32.png">
+<link rel="stylesheet" href="fonts/fonts.css">
+<link rel="stylesheet" href="colors/tokens.css">
+<style>
+  /* The sheet follows the OS theme through tokens.css; the .night panel forces the night palette. */
+  .night {
+    /* night:start */
+    --color-paper: #1b1a24;
+    --color-card: #23222e;
+    --color-mist: #2b2a37;
+    --color-ink: #e8e5f0;
+    --color-ink-soft: #a49fb8;
+    --color-dawn-soft: #3d2a25;
+    --color-sky-soft: #1f2a3d;
+    --color-lav-soft: #2b2440;
+    --color-mint-soft: #1f3129;
+    --color-dawn-strong: #f3a58a;
+    --color-dawn-stronger: #f7b9a3;
+    --color-on-dawn: #1b1a24;
+    --color-sky-deep: #8fc0f2;
+    --color-lav-deep: #c2aaee;
+    --color-mint-deep: #86d6b6;
+    --color-alert: #f0a094;
+    --color-alert-soft: #3a2426;
+    --color-alert-fg: #1b1a24;
+    /* night:end */
+    --shadow-soft: 0 6px 24px rgb(0 0 0 / 0.35);
+    --shadow-lift: 0 12px 36px rgb(0 0 0 / 0.5);
+  }
+  .day {
+    /* day:start */
+    --color-paper: #fcfaf6;
+    --color-card: #fffdfa;
+    --color-mist: #f4f1ea;
+    --color-ink: #46425c;
+    --color-ink-soft: #6f6b86;
+    --color-dawn: #f0916f;
+    --color-dawn-deep: #d4603a;
+    --color-dawn-soft: #fde6dc;
+    --color-dawn-strong: #b0472a;
+    --color-dawn-stronger: #9c3d23;
+    --color-on-dawn: #ffffff;
+    --color-sky: #6fa8e8;
+    --color-sky-deep: #3068a9;
+    --color-sky-soft: #e2eefb;
+    --color-lav: #a98be0;
+    --color-lav-deep: #6e50b3;
+    --color-lav-soft: #eee7fa;
+    --color-mint: #6ec9a5;
+    --color-mint-deep: #24765a;
+    --color-mint-soft: #e0f5ec;
+    --color-alert: #a94a40;
+    --color-alert-soft: #fdebe9;
+    --color-alert-fg: #ffffff;
+    --color-dusk: #575377;
+    /* day:end */
+    --shadow-soft: 0 6px 24px rgb(70 66 92 / 0.08); --shadow-lift: 0 12px 36px rgb(70 66 92 / 0.14);
+  }
+
+  * { box-sizing: border-box; }
+  html { color-scheme: light dark; }
+  body {
+    margin: 0; background: var(--color-paper); color: var(--color-ink);
+    font-family: var(--font-sans); font-size: 16px; line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 48px 24px 96px; }
+  header { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 16px; margin-bottom: 64px; }
+  header img { height: 44px; display: block; }
+  header p { margin: 0; color: var(--color-ink-soft); font-size: 14px; }
+  section { margin-top: 72px; }
+  .eyebrow { font-size: 12px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--color-ink-soft); margin: 0 0 8px; }
+  h2 { font-family: var(--font-display); font-weight: 300; font-size: 32px; line-height: 1.15; margin: 0 0 8px; }
+  .lede { color: var(--color-ink-soft); max-width: 60ch; margin: 0 0 28px; }
+  /* Re-resolve text colour inside themed panels: `color` inherits as a computed value, not as the variable. */
+  .panel, .card, .day, .night { color: var(--color-ink); }
+  .panel { background: var(--color-card); border-radius: var(--radius-card); box-shadow: var(--shadow-soft); padding: 28px; }
+  .panel.ground { background: var(--color-paper); box-shadow: none; border: 1px solid rgb(70 66 92 / 0.10); }
+  .night .panel.ground { border-color: rgb(255 255 255 / 0.08); }
+  .row { display: grid; gap: 20px; }
+  .row.two { grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
+  .row.three { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+  .cap { font-size: 13px; color: var(--color-ink-soft); margin-top: 12px; }
+  .center { display: grid; place-items: center; min-height: 160px; }
+  .center img { max-width: 100%; display: block; }
+  .sizes { display: flex; align-items: end; gap: 28px; flex-wrap: wrap; }
+  .sizes div { text-align: center; font-size: 12px; color: var(--color-ink-soft); }
+  .sizes img { display: block; margin: 0 auto 6px; }
+  .clear { position: relative; display: inline-block; padding: 34px; outline: 1px dashed var(--color-sky); outline-offset: -1px; }
+  .clear img { height: 60px; display: block; }
+  .clear::after { content: "clear space = ¼ of the mark\2019s height"; position: absolute; left: 0; right: 0; bottom: -26px; text-align: center; font-size: 12px; color: var(--color-ink-soft); }
+  .mono { color: var(--color-ink); }
+  .mono svg { height: 110px; width: auto; }
+
+  .swatches { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 14px; }
+  .sw .chip { height: 56px; border-radius: 14px; border: 1px solid rgb(70 66 92 / 0.12); }
+  .night .sw .chip { border-color: rgb(255 255 255 / 0.10); }
+  .sw b { display: block; font-size: 13px; margin-top: 8px; font-weight: 600; }
+  .sw code { font-size: 12px; color: var(--color-ink-soft); }
+  .sw span { display: block; font-size: 12px; color: var(--color-ink-soft); line-height: 1.35; margin-top: 2px; }
+
+  .spec { display: grid; grid-template-columns: 160px 1fr; gap: 20px; align-items: baseline; padding: 18px 0; border-top: 1px solid rgb(70 66 92 / 0.10); }
+  .spec:first-of-type { border-top: 0; padding-top: 0; }
+  .spec small { font-size: 12px; color: var(--color-ink-soft); line-height: 1.4; }
+  .display-1 { font-family: var(--font-display); font-weight: 300; font-size: 36px; line-height: 1.15; }
+  .display-1 em { color: var(--color-dawn-deep); }
+  .display-2 { font-family: var(--font-display); font-weight: 300; font-size: 24px; line-height: 1.25; }
+  .prose { font-family: var(--font-display); font-weight: 400; font-size: 17.2px; line-height: 1.75; max-width: 62ch; }
+  .prose blockquote { margin: 0.8em 0 0; padding-left: 1em; border-left: 2px solid var(--color-dawn); color: var(--color-ink-soft); font-style: italic; }
+  .body { max-width: 62ch; }
+  .small { font-size: 14px; color: var(--color-ink-soft); }
+
+  .btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; border-radius: var(--radius-pill); border: 0; font: 500 16px/1.4 var(--font-sans); cursor: pointer; }
+  .btn.primary { background: var(--color-dawn-strong); color: var(--color-on-dawn); box-shadow: var(--shadow-soft); }
+  .btn.primary:hover { background: var(--color-dawn-stronger); box-shadow: var(--shadow-lift); }
+  .btn.quiet { background: transparent; color: var(--color-ink-soft); }
+  .btn.quiet:hover { background: rgb(255 253 249 / 0.7); color: var(--color-ink); }
+  .btn.outline { background: var(--color-card); color: var(--color-ink); border: 1px solid rgb(70 66 92 / 0.14); }
+  .chips { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 20px; }
+  .chip-help { padding: 6px 14px; border-radius: var(--radius-pill); font-size: 14px; font-weight: 600; }
+  .card { background: var(--color-card); border-radius: var(--radius-card); box-shadow: var(--shadow-soft); padding: 24px; }
+  .card h3 { font-family: var(--font-display); font-weight: 400; font-size: 20px; margin: 0 0 4px; }
+  .card .date { font-size: 13px; color: var(--color-ink-soft); }
+  .well { background: var(--color-mist); border-radius: var(--radius-field); padding: 14px 16px; color: var(--color-ink-soft); margin-top: 14px; }
+  .reflect { margin-top: 20px; padding-top: 18px; border-top: 1px solid rgb(70 66 92 / 0.10); }
+
+  .voice ul { margin: 0; padding-left: 18px; }
+  .voice li { margin: 6px 0; }
+  .voice li q { font-family: var(--font-display); font-size: 17px; }
+  .no { color: var(--color-alert); }
+  footer { margin-top: 80px; font-size: 13px; color: var(--color-ink-soft); }
+  @media (max-width: 640px) { .spec { grid-template-columns: 1fr; gap: 6px; } .panel { padding: 20px; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <picture>
+    <source srcset="logo/lockup-dark.svg" media="(prefers-color-scheme: dark)">
+    <img src="logo/lockup.svg" alt="Mindful Companion">
+  </picture>
+  <p>Brand sheet · v2 · September 2026 · <a href="README.md" style="color:var(--color-lav-deep)">full guide</a></p>
+</header>
+
+<section id="logo">
+  <p class="eyebrow">01 — Logo</p>
+  <h2>You arrive as a line; the mirror gives you back in colour.</h2>
+  <p class="lede">A face in profile, eyes closed, drawn as one line in <b>ink</b>. Across a hairline, its reflection returns in the four brand colours: peach, lavender, sky, mint. One person, deeply heard and held. Not a conversation.</p>
+
+  <div class="row two">
+    <div class="panel day">
+      <div class="center"><img src="logo/lockup.svg" alt="" style="width:min(100%,520px)"></div>
+      <p class="cap">Horizontal lockup on paper — the default everywhere.</p>
+    </div>
+    <div class="panel night ground">
+      <div class="center"><img src="logo/lockup-dark.svg" alt="" style="width:min(100%,520px)"></div>
+      <p class="cap">Night: the line lifts to night ink; the reflection keeps its colour.</p>
+    </div>
+  </div>
+
+  <div class="row three" style="margin-top:20px">
+    <div class="panel day">
+      <div class="center"><img src="logo/lockup-stacked.svg" alt="" style="width:min(100%,260px)"></div>
+      <p class="cap">Stacked — square placements, splash screens.</p>
+    </div>
+    <div class="panel day">
+      <div class="center"><img src="logo/mark.svg" alt="" style="width:120px"></div>
+      <p class="cap">Mark alone — app icon, avatar, inline UI. Below 32 px use the favicon cut (no eye, heavier line).</p>
+    </div>
+    <div class="panel day">
+      <div class="center mono">
+        <!-- mono:start --><svg viewBox="0 0 64 64" role="img" aria-label="Mark, single colour"><defs></defs><g transform="translate(32 32) scale(0.9) translate(-32 -32)"><g transform="translate(-3.5 0)"><path d="M 16.5 9 C 21 11.5, 23.6 17, 24 22 C 24.1 23.4, 23.4 24.4, 23.6 25.4 C 25.6 27.8, 28.6 30.4, 29.4 32.6 C 29.9 33.9, 29.1 34.8, 27.8 35 C 26.9 35.2, 26.1 35.3, 25.3 35.6 C 25.5 36.8, 26.4 37.5, 26.6 38.6 C 26.3 39.3, 25.9 39.6, 25.9 39.9 C 26.8 40.5, 27 41.7, 26.2 42.8 C 25.7 43.6, 26.2 44.6, 26.8 45.6 C 27.2 47.2, 25.9 48.9, 23.8 49.8 C 22.6 50.3, 21.8 50.6, 21.2 51 L 19.8 58" stroke="currentColor" stroke-width="2.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M 19 27.4 Q 20.8 28.9, 22.6 27.2" stroke="currentColor" stroke-width="2.24" fill="none" stroke-linecap="round" stroke-linejoin="round"/></g><path d="M 32 6 V 58" stroke="currentColor" stroke-width="1.20" stroke-linecap="round" opacity="0.28"/><g transform="matrix(-1 0 0 1 64 0) translate(-3.5 0)" opacity="0.45"><path d="M 16.5 9 C 21 11.5, 23.6 17, 24 22 C 24.1 23.4, 23.4 24.4, 23.6 25.4 C 25.6 27.8, 28.6 30.4, 29.4 32.6 C 29.9 33.9, 29.1 34.8, 27.8 35 C 26.9 35.2, 26.1 35.3, 25.3 35.6 C 25.5 36.8, 26.4 37.5, 26.6 38.6 C 26.3 39.3, 25.9 39.6, 25.9 39.9 C 26.8 40.5, 27 41.7, 26.2 42.8 C 25.7 43.6, 26.2 44.6, 26.8 45.6 C 27.2 47.2, 25.9 48.9, 23.8 49.8 C 22.6 50.3, 21.8 50.6, 21.2 51 L 19.8 58" stroke="currentColor" stroke-width="2.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M 19 27.4 Q 20.8 28.9, 22.6 27.2" stroke="currentColor" stroke-width="2.24" fill="none" stroke-linecap="round" stroke-linejoin="round"/></g></g></svg><!-- mono:end -->
+      </div>
+      <p class="cap">Mono — inherits <code>currentColor</code>. Use on photos, embossing, one-colour print.</p>
+    </div>
+  </div>
+
+  <div class="row two" style="margin-top:20px">
+    <div class="panel day">
+      <div class="sizes">
+        <div><img src="logo/mark-favicon.svg" width="16" height="16" alt="">16</div>
+        <div><img src="logo/mark-favicon.svg" width="24" height="24" alt="">24</div>
+        <div><img src="logo/png/mark-32.png" width="32" height="32" alt="">32</div>
+        <div><img src="logo/png/mark-48.png" width="48" height="48" alt="">48</div>
+        <div><img src="logo/mark.svg" width="64" height="64" alt="">64</div>
+        <div><img src="logo/lockup.svg" style="height:17px" alt="">lockup min · 140 wide</div>
+      </div>
+      <p class="cap">Minimum sizes. 16 and 24 use the favicon cut; 32 and up use the master. Below 16 px, nothing.</p>
+    </div>
+    <div class="panel day">
+      <div class="center" style="padding-bottom:20px"><div class="clear"><img src="logo/lockup.svg" alt=""></div></div>
+      <p class="cap">Clear space on every side equals a quarter of the mark's height. Nothing else enters the dashed box.</p>
+    </div>
+  </div>
+</section>
+
+<section id="color">
+  <p class="eyebrow">02 — Colour</p>
+  <h2>Warm paper, plum ink, four light colours.</h2>
+  <p class="lede">Paper carries about 70% of any screen and ink 20%. The four families — dawn, lavender, sky, mint — are the reflection: they appear together in the mark and the wash, and one at a time as help-type tints. Every <code>-deep</code> tone clears AA on paper and on its own tint, in both themes.</p>
+  <div class="panel day">
+    <p class="eyebrow">Day</p>
+    <div class="swatches" id="light-grid"></div>
+  </div>
+  <div class="panel night ground" style="margin-top:20px">
+    <p class="eyebrow">Night — same hues, inverted value</p>
+    <div class="swatches" id="night-grid"></div>
+  </div>
+</section>
+
+<section id="type">
+  <p class="eyebrow">03 — Type</p>
+  <h2>Serif for the human voice, sans for the interface.</h2>
+  <p class="lede"><b>Fraunces</b> speaks: headings, the AI reflection, the wordmark, quotes. Light weights, italics for warmth, never bold. <b>Nunito Sans</b> works: body copy, buttons, labels, forms.</p>
+  <div class="panel">
+    <div class="spec"><small>Display<br>Fraunces 300 · 36/1.15<br>emphasised word in dawn-deep italic</small><div class="display-1">How are you feeling <em>today</em>?</div></div>
+    <div class="spec"><small>Title<br>Fraunces 300 · 24/1.25</small><div class="display-2">What kind of support would help right now?</div></div>
+    <div class="spec"><small>Reflection<br>Fraunces 400 · 17.2/1.75<br>markers &amp; rules in dawn</small><div class="prose">It sounds like this morning asked a lot of you before it had even properly begun. Noticing that, and still sitting down to write, is not nothing.<blockquote>You don't have to make sense of all of it today.</blockquote></div></div>
+    <div class="spec"><small>Body<br>Nunito Sans 400 · 16/1.6</small><div class="body">This is your space. Write at your own pace — when you're ready, choose the kind of support you'd like and a reflection will follow.</div></div>
+    <div class="spec"><small>Small<br>Nunito Sans 400 · 14/1.5 · ink-soft</small><div class="small">Mindful Companion is a space for reflection, not a substitute for professional care.</div></div>
+    <div class="spec"><small>Eyebrow<br>Nunito Sans 400 · 12 · caps · 0.15em</small><div class="eyebrow" style="margin:0">From your companion</div></div>
+  </div>
+</section>
+
+<section id="ui">
+  <p class="eyebrow">04 — Surfaces &amp; controls</p>
+  <h2>Pills, paper cards, soft shadows.</h2>
+  <p class="lede">Anything you can press is a pill. Cards are 24 px radius on the card surface with the soft shadow; input wells are 16 px on mist. Hairlines are ink at 10–14% — never a border and a shadow on the same element.</p>
+  <div class="row two">
+    <div class="panel ground">
+      <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center">
+        <button class="btn primary">Sign in</button>
+        <button class="btn outline">Save quietly</button>
+        <button class="btn quiet">← Back to writing</button>
+      </div>
+      <div class="chips">
+        <span class="chip-help" style="background:var(--color-sky-soft);color:var(--color-sky-deep)">Just listen</span>
+        <span class="chip-help" style="background:var(--color-mint-soft);color:var(--color-mint-deep)">Quick help</span>
+        <span class="chip-help" style="background:var(--color-lav-soft);color:var(--color-lav-deep)">Ongoing support</span>
+        <span class="chip-help" style="background:var(--color-dawn-soft);color:var(--color-dawn-strong)">Learn patterns</span>
+      </div>
+      <p class="cap">Primary = dawn-strong with on-dawn text (AA in both themes). Help types keep their family tint with the family's -deep text (AA).</p>
+    </div>
+    <div class="card">
+      <h3>A heavy morning</h3>
+      <div class="date">Saturday 20 September · Just listen</div>
+      <div class="well">Woke up already tired. Didn't want to open my laptop, didn't want to talk to anyone…</div>
+      <div class="reflect">
+        <p class="eyebrow">From your companion</p>
+        <div class="prose" style="font-size:16px">Tired before the day starts is a particular kind of tired. You showed up here anyway.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="voice" class="voice">
+  <p class="eyebrow">05 — Voice</p>
+  <h2>Quiet, warm, honest. Never a cheerleader.</h2>
+  <p class="lede">Second person, present tense, sentences that could be said softly across a table. No exclamation marks, no emojis, no medical claims. The safety line is always reachable and never loud.</p>
+  <div class="row two">
+    <div class="panel">
+      <p class="eyebrow">Say</p>
+      <ul>
+        <li><q>Save quietly</q> — verbs stay gentle and specific.</li>
+        <li><q>Just listen</q> · <q>I need someone to hear me</q> — the user's words, not clinical labels.</li>
+        <li><q>From your companion</q> — the AI is a companion, never a therapist, coach, or assistant.</li>
+        <li><q>When you're ready</q> — permission, not prompts.</li>
+        <li><q>A space for reflection, not a substitute for professional care.</q></li>
+      </ul>
+    </div>
+    <div class="panel">
+      <p class="eyebrow">Don't</p>
+      <ul>
+        <li><span class="no">"Unlock your best self!"</span> — no hype, no exclamation marks.</li>
+        <li><span class="no">"Your therapist is typing…"</span> — never imply clinical care.</li>
+        <li><span class="no">"Streak: 7 days 🔥"</span> — no gamification, no emojis, no guilt.</li>
+        <li><span class="no">"Journey", "wellness", "self-care routine"</span> — industry words; say what you mean.</li>
+        <li><span class="no">"You should…"</span> — the companion reflects; it does not prescribe.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<footer>Rebuild every generated asset with <code>tools/build.py</code>. Fonts are SIL OFL — licences in <code>fonts/</code>.</footer>
+</div>
+
+<script>
+  const P = /*palette:start*/{"light": {"paper": "#fcfaf6", "card": "#fffdfa", "mist": "#f4f1ea", "ink": "#46425c", "ink-soft": "#6f6b86", "dawn": "#f0916f", "dawn-deep": "#d4603a", "dawn-soft": "#fde6dc", "dawn-strong": "#b0472a", "dawn-stronger": "#9c3d23", "on-dawn": "#ffffff", "sky": "#6fa8e8", "sky-deep": "#3068a9", "sky-soft": "#e2eefb", "lav": "#a98be0", "lav-deep": "#6e50b3", "lav-soft": "#eee7fa", "mint": "#6ec9a5", "mint-deep": "#24765a", "mint-soft": "#e0f5ec", "alert": "#a94a40", "alert-soft": "#fdebe9", "alert-fg": "#ffffff", "dusk": "#575377"}, "dark": {"paper": "#1b1a24", "card": "#23222e", "mist": "#2b2a37", "ink": "#e8e5f0", "ink-soft": "#a49fb8", "dawn-soft": "#3d2a25", "sky-soft": "#1f2a3d", "lav-soft": "#2b2440", "mint-soft": "#1f3129", "dawn-strong": "#f3a58a", "dawn-stronger": "#f7b9a3", "on-dawn": "#1b1a24", "sky-deep": "#8fc0f2", "lav-deep": "#c2aaee", "mint-deep": "#86d6b6", "alert": "#f0a094", "alert-soft": "#3a2426", "alert-fg": "#1b1a24"}, "reflection": ["#f0916f", "#a98be0", "#6fa8e8", "#6ec9a5"]}/*palette:end*/;
+  const ROLES = {
+    paper: "Page ground", card: "Cards, modals, header pills", mist: "Input wells",
+    ink: "Primary text, the line of the mark", "ink-soft": "Secondary text, placeholders",
+    dawn: "Reflection stop 1 · decorative", "dawn-deep": "Emphasised word in display headings", "dawn-soft": "Tint · Learn patterns",
+    "dawn-strong": "Primary button fill; text on dawn-soft", "dawn-stronger": "Primary button hover", "on-dawn": "Text on dawn-strong",
+    sky: "Reflection stop 3 · focus ring", "sky-deep": "Links; text on sky-soft", "sky-soft": "Tint · Just listen",
+    lav: "Reflection stop 2 · favicon reflection", "lav-deep": "“Companion” in the wordmark; text on lav-soft", "lav-soft": "Tint · Ongoing support",
+    mint: "Reflection stop 4 · decorative", "mint-deep": "Text on mint-soft", "mint-soft": "Tint · Quick help",
+    alert: "Errors, destructive actions", "alert-soft": "Alert background", "alert-fg": "Text on alert fill",
+    dusk: "Modal backdrop wash",
+  };
+  function grid(el, pal) {
+    for (const [k, v] of Object.entries(pal)) {
+      el.insertAdjacentHTML("beforeend",
+        `<div class="sw"><div class="chip" style="background:${v}"></div><b>${k}</b><code>${v}</code><span>${ROLES[k] || ""}</span></div>`);
+    }
+  }
+  grid(document.getElementById("light-grid"), P.light || {});
+  grid(document.getElementById("night-grid"), { ...(P.light || {}), ...(P.dark || {}) });
+</script>
+</body>
+</html>

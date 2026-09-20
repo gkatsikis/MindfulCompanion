@@ -1,6 +1,7 @@
 import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { BookOpen, LogIn, Cloud } from 'lucide-react';
+import { BookOpen, LogIn } from 'lucide-react';
+import Mark from './Mark';
 import { useAuth } from '../contexts/useAuth';
 
 interface HeaderProps {
@@ -22,13 +23,9 @@ const Header: React.FC<HeaderProps> = ({ onLoginClick }) => {
         className="flex items-center gap-2.5 cursor-pointer group"
         aria-label="Mindful Companion home"
       >
-        <Cloud
-          size={26}
-          className="text-sky fill-sky-soft group-hover:text-sky-deep transition-colors"
-          strokeWidth={1.75}
-        />
+        <Mark size={34} className="text-ink group-hover:text-lav-deep transition-colors" />
         <span className="font-display text-lg sm:text-xl text-ink tracking-wide whitespace-nowrap">
-          Mindful <span className="italic text-sky-deep">Companion</span>
+          Mindful <span className="italic text-lav-deep">Companion</span>
         </span>
       </button>
 
@@ -57,7 +54,7 @@ const Header: React.FC<HeaderProps> = ({ onLoginClick }) => {
         ) : (
           <button
             onClick={onLoginClick}
-            className="flex items-center gap-2 px-5 py-2.5 bg-dawn-strong hover:bg-dawn-stronger text-white rounded-full shadow-soft hover:shadow-lift transition-all cursor-pointer whitespace-nowrap"
+            className="flex items-center gap-2 px-5 py-2.5 bg-dawn-strong hover:bg-dawn-stronger text-on-dawn font-medium rounded-full shadow-soft hover:shadow-lift transition-all cursor-pointer whitespace-nowrap"
           >
             <LogIn size={18} strokeWidth={1.75} />
             Sign in

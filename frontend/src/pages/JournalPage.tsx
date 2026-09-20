@@ -29,7 +29,7 @@ const HELP_CARDS: {
   needsAccount: boolean;
 }[] = [
   { type: 'acute_validation', icon: Ear, chip: 'bg-sky-soft text-sky-deep', title: 'Just listen', caption: 'I need someone to hear me', needsAccount: false },
-  { type: 'acute_skills', icon: Sparkles, chip: 'bg-sage-soft text-sage-deep', title: 'Quick help', caption: 'I need coping techniques now', needsAccount: false },
+  { type: 'acute_skills', icon: Sparkles, chip: 'bg-mint-soft text-mint-deep', title: 'Quick help', caption: 'I need coping techniques now', needsAccount: false },
   { type: 'chronic_validation', icon: Sprout, chip: 'bg-lav-soft text-lav-deep', title: 'Ongoing support', caption: 'Support for long-term struggles', needsAccount: true },
   { type: 'chronic_education', icon: Waves, chip: 'bg-dawn-soft text-dawn-strong', title: 'Learn patterns', caption: 'Help me understand my trends', needsAccount: true },
 ];
@@ -72,7 +72,7 @@ interface Reflection {
 }
 
 const primaryButton =
-  'inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-dawn-strong hover:bg-dawn-stronger text-white shadow-soft hover:shadow-lift transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed';
+  'inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-dawn-strong hover:bg-dawn-stronger text-on-dawn font-medium shadow-soft hover:shadow-lift transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed';
 const secondaryButton =
   'inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-card/70 text-ink-soft hover:text-ink ring-1 ring-ink/10 hover:ring-ink/20 transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed';
 

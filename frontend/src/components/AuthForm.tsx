@@ -211,7 +211,7 @@ const AuthForm: React.FC<AuthFormProps> = ({ onAuthSuccess, onClose }) => {
         <button
           type="submit"
           disabled={authLoading}
-          className="w-full cursor-pointer py-3 bg-dawn-strong hover:bg-dawn-stronger text-white rounded-full transition-all shadow-soft hover:shadow-lift disabled:opacity-50 font-medium"
+          className="w-full cursor-pointer py-3 bg-dawn-strong hover:bg-dawn-stronger text-on-dawn rounded-full transition-all shadow-soft hover:shadow-lift disabled:opacity-50 font-medium"
         >
           {authLoading ? (
             authMode === 'login' ? 'Signing in...' : 'Creating account...'

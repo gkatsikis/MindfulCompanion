@@ -2,6 +2,11 @@
 
 ## Styling
 
+- [x] **Adopt brand kit v2 in the app** (Sept 2026). Favicon set, OG image,
+      inline mark in `Header.tsx` (`components/Mark.tsx`), tokens v2 in
+      `index.css`, `sage-*` → `mint-*`, primary buttons `text-on-dawn
+      font-medium`, prism `.sky-wash`. Verified: build, lint, tests, light and
+      dark screenshots.
 - [ ] **Dark mode follows the OS only.** Tokens flip under
       `prefers-color-scheme: dark` (`frontend/src/index.css`); there is no in-app
       toggle. Add one only if users ask — it needs a persisted preference and a
@@ -13,6 +18,9 @@
 
 ## Bugs/Fixes
 
+- [x] **Help-type chips miss AA contrast.** Closed by tokens v2 (Sept 2026):
+      every `-deep` on `-soft` pair and `on-dawn` on `dawn-strong` clear 4.5:1 in
+      both themes; the kit's build asserts it.
 - [ ] **Anonymous reflection is not attached on later sign-in.** "Sign in to
       keep this entry" saves the entry text (`createJournalEntry`) but the AI
       reflection shown on screen is not stored with it — the API has no endpoint

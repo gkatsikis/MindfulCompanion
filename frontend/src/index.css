@@ -1,59 +1,67 @@
 @import "tailwindcss";
 
 /*
- * Mindful Companion — "dawn sky" design system.
- * Warm paper base, soft morning-sky tones, one warm peach accent.
+ * Mindful Companion design tokens — mirrors branding-kit/colors/tokens.css (v2).
+ * Warm paper, plum ink, four light families: dawn, lavender, sky, mint.
  * Tokens below become Tailwind utilities (bg-paper, text-ink, shadow-soft, …).
  *
- * Contrast: every text token here clears WCAG AA (4.5:1) on the surface it is
- * meant for. `dawn` is decorative only; text-bearing fills use `dawn-strong`.
+ * Contrast: the kit's build asserts every `-deep` on its `-soft` tint, on paper,
+ * and `on-dawn` on `dawn-strong` clear WCAG AA (4.5:1) in both themes. The bright
+ * four (`dawn`, `lav`, `sky`, `mint`) are decorative and never carry text.
  */
 @theme {
   --font-display: "Fraunces", Georgia, "Times New Roman", serif;
   --font-sans: "Nunito Sans", ui-sans-serif, system-ui, -apple-system, sans-serif;
 
   /* surfaces */
-  --color-paper: #fbf8f2;      /* warm cream — page ground */
-  --color-card: #fffdf9;       /* card surface, a breath warmer than white */
-  --color-mist: #f3f0e9;       /* input wells */
+  --color-paper: #fcfaf6;      /* warm cream — page ground */
+  --color-card: #fffdfa;       /* card surface, a breath warmer than white */
+  --color-mist: #f4f1ea;       /* input wells */
 
   /* text */
   --color-ink: #46425c;        /* soft plum-slate, never pure black */
-  --color-ink-soft: #6f6b86;   /* secondary text — 4.8:1 on paper */
+  --color-ink-soft: #6f6b86;   /* secondary text */
 
-  /* dawn — the single warm accent */
-  --color-dawn: #dd8a72;         /* accents, markers, large display text only */
-  --color-dawn-deep: #c9755e;
-  --color-dawn-soft: #f8e6dc;
-  --color-dawn-strong: #b05a45;  /* primary button fill — 4.8:1 with white text */
-  --color-dawn-stronger: #9d4d3a;
+  /* dawn — peach; primary action */
+  --color-dawn: #f0916f;         /* reflection stop 1; markers, large display text only */
+  --color-dawn-deep: #d4603a;    /* the emphasised word in display headings */
+  --color-dawn-soft: #fde6dc;
+  --color-dawn-strong: #b0472a;  /* primary button fill; text on dawn-soft */
+  --color-dawn-stronger: #9c3d23;
+  --color-on-dawn: #ffffff;      /* text on dawn-strong — flips at night */
 
-  /* sky family — quiet cool accents */
-  --color-sky: #7c92bd;
-  --color-sky-deep: #5d76a8;
-  --color-sky-soft: #e1e9f5;
+  /* lavender — the companion's word */
+  --color-lav: #a98be0;
+  --color-lav-deep: #6e50b3;
+  --color-lav-soft: #eee7fa;
 
-  --color-lav: #9a8bc0;
-  --color-lav-deep: #7e6daa;
-  --color-lav-soft: #eae5f5;
+  /* sky — links, focus */
+  --color-sky: #6fa8e8;
+  --color-sky-deep: #3068a9;
+  --color-sky-soft: #e2eefb;
 
-  --color-sage: #7d9d86;
-  --color-sage-deep: #628a6d;
-  --color-sage-soft: #e3ede5;
+  /* mint */
+  --color-mint: #6ec9a5;
+  --color-mint-deep: #24765a;
+  --color-mint-soft: #e0f5ec;
 
   /* alert — destructive actions and errors */
   --color-alert: #a94a40;        /* text on alert-soft and fill under alert-fg */
-  --color-alert-soft: #fbeceb;
+  --color-alert-soft: #fdebe9;
   --color-alert-fg: #ffffff;
 
   /* dusk — modal backdrop world */
   --color-dusk: #575377;
 
+  /* the four together: only as the reflection and the page wash */
+  --gradient-reflection: linear-gradient(180deg, #f0916f, #a98be0, #6fa8e8, #6ec9a5);
+  --gradient-wash: linear-gradient(135deg, #fde6dc, #eee7fa, #e2eefb, #e0f5ec);
+
   --shadow-soft: 0 6px 24px rgb(70 66 92 / 0.08);
   --shadow-lift: 0 12px 36px rgb(70 66 92 / 0.14);
 }
 
-/* Night palette: same hues, inverted value. Cloud + sky washes flip below. */
+/* Night palette: same hues, inverted value. */
 @media (prefers-color-scheme: dark) {
   :root {
     --color-paper: #1b1a24;
@@ -61,20 +69,26 @@
     --color-mist: #2b2a37;
 
     --color-ink: #e8e5f0;
-    --color-ink-soft: #a49fb8;   /* 6.7:1 on night paper */
+    --color-ink-soft: #a49fb8;
 
-    --color-dawn-soft: #3a2a27;
-    --color-sky-soft: #232a3a;
-    --color-lav-soft: #2a2536;
-    --color-sage-soft: #232d27;
+    --color-dawn-soft: #3d2a25;
+    --color-sky-soft: #1f2a3d;
+    --color-lav-soft: #2b2440;
+    --color-mint-soft: #1f3129;
 
-    --color-sky-deep: #9fb2da;
-    --color-lav-deep: #b3a5d8;
-    --color-sage-deep: #9dbba5;
+    --color-dawn-strong: #f3a58a;   /* button turns light peach… */
+    --color-dawn-stronger: #f7b9a3;
+    --color-on-dawn: #1b1a24;       /* …with dark text */
+
+    --color-sky-deep: #8fc0f2;
+    --color-lav-deep: #c2aaee;
+    --color-mint-deep: #86d6b6;
 
     --color-alert: #f0a094;
     --color-alert-soft: #3a2426;
     --color-alert-fg: #1b1a24;
+
+    --gradient-wash: linear-gradient(135deg, #3d2a25, #2b2440, #1f2a3d, #1f3129);
 
     --shadow-soft: 0 6px 24px rgb(0 0 0 / 0.35);
     --shadow-lift: 0 12px 36px rgb(0 0 0 / 0.5);
@@ -114,10 +128,12 @@ body {
 /* ---- sky ----------------------------------------------------------- */
 
 .sky-wash {
-  background: linear-gradient(to bottom, #dfe8f4 0%, #eef0ef 34%, var(--color-paper) 62%);
+  background:
+    linear-gradient(to bottom, transparent 0%, var(--color-paper) 62%),
+    var(--gradient-wash);
 }
 .dawn-glow {
-  background: radial-gradient(52% 38% at 82% 0%, rgb(246 214 189 / 0.55), transparent);
+  background: radial-gradient(52% 38% at 82% 0%, rgb(240 145 111 / 0.22), transparent);
 }
 
 /* One element per cloud: stacked radial gradients give soft, edgeless mist */
@@ -136,11 +152,14 @@ body {
 }
 
 @media (prefers-color-scheme: dark) {
+  /* Night: the tinted wash is veiled so the corners stay night, not mud */
   .sky-wash {
-    background: linear-gradient(to bottom, #1f2338 0%, #1d1c2a 40%, var(--color-paper) 65%);
+    background:
+      linear-gradient(to bottom, rgb(27 26 36 / 0.55) 0%, var(--color-paper) 62%),
+      var(--gradient-wash);
   }
   .dawn-glow {
-    background: radial-gradient(52% 38% at 82% 0%, rgb(221 138 114 / 0.14), transparent);
+    background: radial-gradient(52% 38% at 82% 0%, rgb(240 145 111 / 0.12), transparent);
   }
   .cloud {
     --cloud-color: rgb(140 150 190 / 0.16);

@@ -102,7 +102,7 @@ const ProfilePage: React.FC = () => {
           <p className="text-ink-soft">Nothing written in {monthLabel} yet.</p>
           <Link
             to="/"
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-dawn-strong hover:bg-dawn-stronger text-white shadow-soft hover:shadow-lift transition-all"
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-dawn-strong hover:bg-dawn-stronger text-on-dawn font-medium shadow-soft hover:shadow-lift transition-all"
           >
             <PenLine size={16} strokeWidth={1.75} />
             Write today's entry
